@@ -16,9 +16,9 @@
 enum {
     PICTURE_WIDTH = 1024,
     PICTURE_HEIGHT = 768,
-    BACKGROUND_COLOR_1 = 194,
-    BACKGROUND_COLOR_2 = 194,
-    BACKGROUND_COLOR_3 = 214
+    BACKGROUND_COLOR_1 = 100,
+    BACKGROUND_COLOR_2 = 0,
+    BACKGROUND_COLOR_3 = 0
 };
 
 const Vec3f BACKGROUND_COLOR = Vec3f(BACKGROUND_COLOR_1, BACKGROUND_COLOR_2, BACKGROUND_COLOR_3);
@@ -59,7 +59,7 @@ void save_picture(std::vector<Vec3f> & picture) {
     ofs << "P6\n" << PICTURE_WIDTH << " " << PICTURE_HEIGHT << "\n255\n";
     for (size_t i = 0; i < PICTURE_WIDTH * PICTURE_HEIGHT; ++i) {
         for (size_t j = 0; j < 3; j++) {
-            ofs << (char)(255 * std::max(0.f, std::min(1.f, picture[i][j])));
+            ofs << (picture[i][j]);
         }
     }
     ofs.close();
