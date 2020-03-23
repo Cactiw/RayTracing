@@ -23,10 +23,10 @@ template <typename T> struct vec<3,T> {
     const T& operator[](const size_t i) const { assert(i<3); return i<=0 ? x : (1==i ? y : z); }
 
     vec<3, T> operator + (const vec<3, T> other) const {
-        return vec<3, T>(this->x + other->x, this->y + other->y, this->y + other->y);
+        return vec<3, T>(this->x + other.x, this->y + other.y, this->z + other.z);
     }
     vec<3, T> operator - (const vec<3, T> other) const {
-        return vec<3, T>(this->x - other->x, this->y - other->y, this->y - other->y);
+        return vec<3, T>(this->x - other.x, this->y - other.y, this->z - other.z);
     }
 
     float norm() { return std::sqrt(x*x+y*y+z*z); }
