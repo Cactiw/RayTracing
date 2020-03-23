@@ -5,7 +5,8 @@
 
 #include "stb_image_write.h"
 
-#include "Sphere.h"
+#include "objects/Object.h"
+#include "objects/Sphere.h"
 #include "vector.cpp"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
