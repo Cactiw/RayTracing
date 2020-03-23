@@ -4,3 +4,6 @@
 
 #include "Object.h"
 
+Vec3f Object::getColor() const {
+    return this->color;
+}

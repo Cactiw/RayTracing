@@ -12,10 +12,6 @@ float Sphere::getRadius() const {
     return this->radius;
 }
 
-Vec3f Sphere::getColor() const {
-    return this->color;
-}
-
 float dot(const Vec3f &point, const Vec3f &center) {
     float norm = (point - center).norm();
     return norm * norm;

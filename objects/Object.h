@@ -6,6 +6,7 @@
 #define MACHINEGRAPHICS1TASK_OBJECT_H
 
 #include "../vector.cpp"
+#include "../classes/Ray.h"
 
 
 class Object {
@@ -13,9 +14,11 @@ class Object {
     Vec3f color;
 
 public:
-    Object(Vec3f &ctr, Vec3f &clr): center(ctr), color(clr) {}
+    Object(Vec3f ctr, Vec3f clr): center(ctr), color(clr) {}
 
-    virtual float check_intersect() = 0;
+    [[nodiscard]] virtual float check_intersect(const Ray &ray) const {return -1;};
+
+    [[nodiscard]] Vec3f getColor() const;
 };
 
 

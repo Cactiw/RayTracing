@@ -17,15 +17,14 @@ class Sphere : public Object{
 
 public:
 
-    Sphere(Vec3f &ctr, Vec3f &clr, float radius) : Object(ctr, clr) {
+    Sphere(Vec3f ctr, Vec3f clr, float radius) : Object(ctr, clr) {
         this->radius = radius;
     }
 
     [[nodiscard]] Vec3f getCenter() const;
     [[nodiscard]] float getRadius() const;
-    [[nodiscard]] Vec3f getColor() const;
 
-    [[nodiscard]] float check_intersect(const Ray &ray) const;
+    [[nodiscard]] float check_intersect(const Ray &ray) const override;
 
 };
 
