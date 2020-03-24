@@ -4,14 +4,14 @@
 
 #include "Color.h"
 
-unsigned char Color::getR() const {
+char Color::getR() const {
     return this->r;
 }
 
-unsigned char Color::getG() const {
+char Color::getG() const {
     return this->g;
 }
 
-unsigned char Color::getB() const {
+char Color::getB() const {
     return this->b;
 }
