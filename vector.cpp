@@ -29,6 +29,11 @@ template <typename T> struct vec<3,T> {
         return vec<3, T>(this->x - other.x, this->y - other.y, this->z - other.z);
     }
 
+    float dotProduct(const vec<3, T> other) const {
+//        auto new_this = this->normalize();
+//        auto new_other = other.normalize();
+        return this->x * other.x + this->y * other.y + this-> z * other.z;
+    }
     float norm() { return std::sqrt(x*x+y*y+z*z); }
     vec<3,T> & normalize(T l=1) { *this = (*this)*(l/norm()); return *this; }
     T x,y,z;
