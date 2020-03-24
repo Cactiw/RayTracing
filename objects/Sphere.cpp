@@ -15,11 +15,10 @@ float dot(const Vec3f &point, const Vec3f &center) {
 }
 
 float Sphere::check_intersect(const Ray &ray) const {
-    //std::cout << "check_intersect" << std::endl;
     float t0, t1;
     Vec3f L = getCenter() - ray.getBeginPoint();
     float tca = L.dotProduct(ray.getDirection());
-    // if (tca < 0) return false;
+    if (tca < 0) return -1;
     float d2 = L.dotProduct(L) - tca * tca;
     if (d2 > radius2) return -1;
     float thc = sqrt(radius2 - d2);
