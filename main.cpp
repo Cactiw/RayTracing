@@ -18,7 +18,8 @@
 enum {
     PICTURE_WIDTH = 1024,
     PICTURE_HEIGHT = 768,
-    BACKGROUND_COLOR_1 = 100,
+    CHANNELS_NUM = 3,
+    BACKGROUND_COLOR_1 = 0,
     BACKGROUND_COLOR_2 = 0,
     BACKGROUND_COLOR_3 = 0
 };
@@ -31,7 +32,7 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects) {
     for (const auto& object: objects) {
         float dist = object->check_intersect(ray);
         if (dist > 0 && dist < min_dist) {
-            std::cout << "Intersect" << std::endl;
+            std::cout << "Intersect " << ray.getTargetPoint().x << " " << ray.getTargetPoint().y << std::endl;
             min_dist = dist;
             color = object->getColor();
         }
@@ -57,7 +58,14 @@ Vec3f randomise_point() {
 
 
 void save_picture(std::vector<Color> & picture) {
-    stbi_write_jpg("./out.jpg", PICTURE_WIDTH, PICTURE_HEIGHT, 3, static_cast<void*>(picture.data()), 100);
+    std::vector<unsigned char> finalPicture;
+    for (auto color: picture) {
+        finalPicture.push_back(color.getR());
+        finalPicture.push_back(color.getG());
+        finalPicture.push_back(color.getB());
+    }
+    stbi_write_jpg("./out.jpg", PICTURE_WIDTH, PICTURE_HEIGHT, CHANNELS_NUM,
+            static_cast<void *>(finalPicture.data()), PICTURE_WIDTH * CHANNELS_NUM);
 }
 
 void free_resources(std::vector<Object*> &objects) {
@@ -69,7 +77,7 @@ void free_resources(std::vector<Object*> &objects) {
 int main() {
     std::vector <Object*> objects;
 
-    objects.push_back(new Sphere(Vec3f(10, 10, 150), Color(255, 255, 255), 10));
+    objects.push_back(new Sphere(Vec3f(100, 100, 150), Color(255, 255, 255), 50));
     auto pic = generate_picture(objects);
     save_picture(pic);
     free_resources(objects);

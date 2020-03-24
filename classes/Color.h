@@ -7,13 +7,13 @@
 
 
 class Color {
-    int r, g, b;
+    unsigned char r, g, b;
 public:
-    Color(int r, int g, int b): r(r), g(g), b(b) {}
+    Color(unsigned char r, unsigned char g, unsigned char b): r(r), g(g), b(b) {}
 
-    [[nodiscard]] int getR() const;
-    [[nodiscard]] int getG() const;
-    [[nodiscard]] int getB() const;
+    [[nodiscard]] unsigned char getR() const;
+    [[nodiscard]] unsigned char getG() const;
+    [[nodiscard]] unsigned char getB() const;
 };
 
 
