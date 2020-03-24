@@ -40,8 +40,8 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects) {
     return color;
 }
 
-std::vector<char> generate_picture(std::vector<Object*> &objects) {
-    std::vector<char> picture;
+std::vector<unsigned char> generate_picture(std::vector<Object*> &objects) {
+    std::vector<unsigned char> picture;
     for (size_t i = 0; i < PICTURE_WIDTH; ++i) {
         for (size_t j = 0; j < PICTURE_HEIGHT; ++j) {
             auto beginPoint = Vec3f(0, 0, 0), endPoint = Vec3f(i, j, 100);
@@ -60,14 +60,14 @@ Vec3f randomise_point() {
 }
 
 
-void save_picture(std::vector<char> & picture) {
+void save_picture(std::vector<unsigned char> & picture) {
 
     std::ofstream ofs;
     ofs.open("out.ppm");
     ofs << "P3\n" << PICTURE_WIDTH << " " << PICTURE_HEIGHT << "\n255\n";
     int i = 0;
     for (auto c: picture) {
-        ofs << (char)c;
+        ofs << c;
         if (i == 2) {
             ofs << "\n";
             i = 0;
