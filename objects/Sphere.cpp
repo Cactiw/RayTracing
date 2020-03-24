@@ -15,26 +15,24 @@ float dot(const Vec3f &point, const Vec3f &center) {
 }
 
 float Sphere::check_intersect(const Ray &ray) const {
-    Vec3f oc = ray.getBeginPoint() - center;
-    float a = dot(ray.getTargetPoint(), ray.getTargetPoint());
-    float b = 2.0 * dot(oc, ray.getTargetPoint());
-    float c = dot(oc, oc) - radius*radius;
-    float discriminant = b*b - 4*a*c;
-    if(discriminant < 0){
-        return -1.0;
-    } else {
-        float numerator = -b - sqrt(discriminant);
-        if (numerator > 0.0) {
-            return numerator / (2.0 * a);
-        }
+    //std::cout << "check_intersect" << std::endl;
+    float t0, t1;
+    Vec3f L = getCenter() - ray.getBeginPoint();
+    float tca = L.dotProduct(ray.getTargetPoint());
+    // if (tca < 0) return false;
+    float d2 = L.dotProduct(L) - tca * tca;
+    if (d2 > radius2) return -1;
+    float thc = sqrt(radius2 - d2);
+    t0 = tca - thc;
+    t1 = tca + thc;
+    if (t0 > t1) std::swap(t0, t1);
 
-        numerator = -b + sqrt(discriminant);
-        if (numerator > 0.0) {
-            return numerator / (2.0 * a);
-        }
-        else {
-            return -1;
-        }
-
+    if (t0 < 0) {
+        t0 = t1; // if t0 is negative, let's use t1 instead
+        if (t0 < 0) return -1; // both t0 and t1 are negative
     }
+
+    float t = t0;
+
+    return t;
 }
