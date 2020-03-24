@@ -42,8 +42,8 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects) {
 
 std::vector<unsigned char> generate_picture(std::vector<Object*> &objects) {
     std::vector<unsigned char> picture;
-    for (size_t i = 0; i < PICTURE_WIDTH; ++i) {
-        for (size_t j = 0; j < PICTURE_HEIGHT; ++j) {
+    for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
+        for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
             auto beginPoint = Vec3f(0, 0, 0), endPoint = Vec3f(i, j, 100);
             auto ray = Ray(beginPoint, endPoint);
             auto color = cast_ray(ray, objects);
