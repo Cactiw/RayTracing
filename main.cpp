@@ -47,7 +47,7 @@ std::vector<Color> generate_picture(std::vector<Object*> &objects) {
         for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
 //            auto beginPoint = Vec3f(PICTURE_HEIGHT / 2., PICTURE_WIDTH / 2., 0);
             auto beginPoint = Vec3f(i, j, 0);
-            auto endPoint = Vec3f(i, j, 100);
+            auto endPoint = Vec3f(i, j, PICTURE_WIDTH / 2.);
             auto ray = Ray(beginPoint, endPoint);
             picture.push_back(cast_ray(ray, objects));
         }
