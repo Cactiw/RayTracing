@@ -10,18 +10,16 @@
 #include "Object.h"
 
 class Sphere : public Object{
-    Vec3f center;
     float radius;
-
-    Vec3f color;
+    float radius2;
 
 public:
 
     Sphere(Vec3f ctr, Vec3f clr, float radius) : Object(ctr, clr) {
         this->radius = radius;
+        this->radius2 = radius * radius;
     }
 
-    [[nodiscard]] Vec3f getCenter() const;
     [[nodiscard]] float getRadius() const;
 
     [[nodiscard]] float check_intersect(const Ray &ray) const override;

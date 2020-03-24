@@ -18,6 +18,7 @@ public:
 
     [[nodiscard]] virtual float check_intersect(const Ray &ray) const {return -1;};
 
+    [[nodiscard]] Vec3f getCenter() const;
     [[nodiscard]] Vec3f getColor() const;
 };
 

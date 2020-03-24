@@ -2,11 +2,8 @@
 // Created by cactiw on 21.03.2020.
 //
 
+#include <iostream>
 #include "Sphere.h"
-
-Vec3f Sphere::getCenter() const {
-    return this->center;
-}
 
 float Sphere::getRadius() const {
     return this->radius;
