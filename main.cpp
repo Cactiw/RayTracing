@@ -8,6 +8,7 @@
 #include "objects/Object.h"
 #include "objects/Sphere.h"
 #include "classes/Ray.h"
+#include "classes/Color.h"
 #include "vector.cpp"
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
@@ -21,14 +22,15 @@ enum {
     BACKGROUND_COLOR_3 = 0
 };
 
-const Vec3f BACKGROUND_COLOR = Vec3f(BACKGROUND_COLOR_1, BACKGROUND_COLOR_2, BACKGROUND_COLOR_3);
+const Color BACKGROUND_COLOR = Color(BACKGROUND_COLOR_1, BACKGROUND_COLOR_2, BACKGROUND_COLOR_3);
 
-Vec3f cast_ray(Ray &ray, std::vector<Object*> &objects) {
-    float min_dist = -1;
-    Vec3f color = BACKGROUND_COLOR;
+Color cast_ray(Ray &ray, std::vector<Object*> &objects) {
+    float min_dist = std::numeric_limits<float>::max();
+    Color color = BACKGROUND_COLOR;
     for (const auto& object: objects) {
         float dist = object->check_intersect(ray);
         if (dist > 0 && dist < min_dist) {
+            std::cout << "Intersect" << std::endl;
             min_dist = dist;
             color = object->getColor();
         }
@@ -36,13 +38,13 @@ Vec3f cast_ray(Ray &ray, std::vector<Object*> &objects) {
     return color;
 }
 
-std::vector<Vec3f> generate_picture(std::vector<Object*> &objects) {
-    std::vector<Vec3f> picture((PICTURE_WIDTH * PICTURE_HEIGHT));
+std::vector<Color> generate_picture(std::vector<Object*> &objects) {
+    std::vector<Color> picture;
     for (size_t i = 0; i < PICTURE_WIDTH; ++i) {
         for (size_t j = 0; j < PICTURE_HEIGHT; ++j) {
-            auto beginPoint = Vec3f(0, 0, 0), endPoint = Vec3f(i, j, 0);
+            auto beginPoint = Vec3f(0, 0, 0), endPoint = Vec3f(i, j, 100);
             auto ray = Ray(beginPoint, endPoint);
-            picture[j * i + i] = cast_ray(ray, objects);
+            picture.push_back(cast_ray(ray, objects));
         }
     }
     return picture;
@@ -53,14 +55,12 @@ Vec3f randomise_point() {
 }
 
 
-void save_picture(std::vector<Vec3f> & picture) {
+void save_picture(std::vector<Color> & picture) {
     std::ofstream ofs;
     ofs.open("./out.ppm");
     ofs << "P6\n" << PICTURE_WIDTH << " " << PICTURE_HEIGHT << "\n255\n";
-    for (size_t i = 0; i < PICTURE_WIDTH * PICTURE_HEIGHT; ++i) {
-        for (size_t j = 0; j < 3; j++) {
-            ofs << (picture[i][j]);
-        }
+    for (auto color: picture) {
+        ofs << color.getR() << color.getG() << color.getB();
     }
     ofs.close();
 }
@@ -74,7 +74,7 @@ void free_resources(std::vector<Object*> &objects) {
 int main() {
     std::vector <Object*> objects;
 
-    objects.push_back(new Sphere(Vec3f(10, 10, 0), Vec3f(255, 255, 255), 10));
+    objects.push_back(new Sphere(Vec3f(10, 10, 150), Color(255, 255, 255), 10));
     auto pic = generate_picture(objects);
     save_picture(pic);
     free_resources(objects);

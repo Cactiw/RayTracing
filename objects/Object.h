@@ -7,19 +7,20 @@
 
 #include "../vector.cpp"
 #include "../classes/Ray.h"
+#include "../classes/Color.h"
 
 
 class Object {
     Vec3f center;
-    Vec3f color;
+    Color color;
 
 public:
-    Object(Vec3f ctr, Vec3f clr): center(ctr), color(clr) {}
+    Object(Vec3f ctr, Color clr): center(ctr), color(clr) {}
 
     [[nodiscard]] virtual float check_intersect(const Ray &ray) const {return -1;};
 
     [[nodiscard]] Vec3f getCenter() const;
-    [[nodiscard]] Vec3f getColor() const;
+    [[nodiscard]] Color getColor() const;
 };
 
 

@@ -2,9 +2,10 @@
 // Created by cactiw on 23.03.2020.
 //
 
+#include "../classes/Color.h"
 #include "Object.h"
 
-Vec3f Object::getColor() const {
+Color Object::getColor() const {
     return this->color;
 }
 

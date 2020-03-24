@@ -8,6 +8,7 @@
 #include "../vector.cpp"
 #include "../classes/Ray.h"
 #include "Object.h"
+#include "../classes/Color.h"
 
 class Sphere : public Object{
     float radius;
@@ -15,7 +16,7 @@ class Sphere : public Object{
 
 public:
 
-    Sphere(Vec3f ctr, Vec3f clr, float radius) : Object(ctr, clr) {
+    Sphere(Vec3f ctr, Color clr, float radius) : Object(ctr, clr) {
         this->radius = radius;
         this->radius2 = radius * radius;
     }
