@@ -23,20 +23,20 @@ enum {
 
 const Vec3f BACKGROUND_COLOR = Vec3f(BACKGROUND_COLOR_1, BACKGROUND_COLOR_2, BACKGROUND_COLOR_3);
 
-Vec3f cast_ray(Ray &ray, std::vector<Object> &objects) {
+Vec3f cast_ray(Ray &ray, std::vector<Object*> &objects) {
     float min_dist = -1;
     Vec3f color = BACKGROUND_COLOR;
-    for (auto object: objects) {
-        float dist = object.check_intersect(ray);
+    for (const auto& object: objects) {
+        float dist = object->check_intersect(ray);
         if (dist > 0 && dist < min_dist) {
             min_dist = dist;
-            color = object.getColor();
+            color = object->getColor();
         }
     }
     return color;
 }
 
-std::vector<Vec3f> generate_picture(std::vector<Object> &objects) {
+std::vector<Vec3f> generate_picture(std::vector<Object*> &objects) {
     std::vector<Vec3f> picture((PICTURE_WIDTH * PICTURE_HEIGHT));
     for (size_t i = 0; i < PICTURE_WIDTH; ++i) {
         for (size_t j = 0; j < PICTURE_HEIGHT; ++j) {
@@ -65,11 +65,18 @@ void save_picture(std::vector<Vec3f> & picture) {
     ofs.close();
 }
 
-int main() {
-    std::vector <Object> objects;
+void free_resources(std::vector<Object*> &objects) {
+    for (auto object: objects) {
+        delete object;
+    }
+}
 
-    objects.push_back(Sphere(Vec3f(10, 10, 0), Vec3f(255, 255, 255), 10));
+int main() {
+    std::vector <Object*> objects;
+
+    objects.push_back(new Sphere(Vec3f(10, 10, 0), Vec3f(255, 255, 255), 10));
     auto pic = generate_picture(objects);
     save_picture(pic);
+    free_resources(objects);
     return 0;
 }
