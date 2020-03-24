@@ -28,6 +28,9 @@ template <typename T> struct vec<3,T> {
     vec<3, T> operator - (const vec<3, T> other) const {
         return vec<3, T>(this->x - other.x, this->y - other.y, this->z - other.z);
     }
+    vec<3, T> operator * (float a) const {
+        return vec<3, T>(this->x * a, this->y * a, this->z * a);
+    }
 
     float dotProduct(const vec<3, T> other) const {
 //        auto new_this = this->normalize();
