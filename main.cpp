@@ -75,7 +75,11 @@ int main() {
     std::vector <Object*> objects;
 
     objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. + 400, PICTURE_HEIGHT / 2. + 350, 
-            PICTURE_WIDTH / 2. + 300), Color(255, 255, 255), 50));
+            PICTURE_WIDTH / 2. + 300), Color(255, 255, 255), 300));
+    objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. + 250, PICTURE_HEIGHT / 2. + 250,
+            PICTURE_WIDTH / 2. + 100), Color(150, 0, 0), 150));
+    objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. - 400, PICTURE_HEIGHT / 2.,
+            PICTURE_WIDTH / 2. + 300), Color(0, 150, 50), 100));
     auto pic = generate_picture(objects);
     save_picture(pic);
     free_resources(objects);
