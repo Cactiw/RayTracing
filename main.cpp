@@ -18,6 +18,7 @@
 enum {
     PICTURE_WIDTH = 1024,
     PICTURE_HEIGHT = 768,
+    FOV = 70,
     CHANNELS_NUM = 3,
     BACKGROUND_COLOR_1 = 0,
     BACKGROUND_COLOR_2 = 0,
@@ -44,7 +45,9 @@ std::vector<Color> generate_picture(std::vector<Object*> &objects) {
     std::vector<Color> picture;
     for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
         for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
-            auto beginPoint = Vec3f(0, 0, 0), endPoint = Vec3f(i, j, 100);
+//            auto beginPoint = Vec3f(PICTURE_HEIGHT / 2., PICTURE_WIDTH / 2., 0);
+            auto beginPoint = Vec3f(i, j, 0);
+            auto endPoint = Vec3f(i, j, 100);
             auto ray = Ray(beginPoint, endPoint);
             picture.push_back(cast_ray(ray, objects));
         }
