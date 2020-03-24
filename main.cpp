@@ -58,7 +58,8 @@ Vec3f randomise_point() {
 
 
 void save_picture(std::vector<Color> & picture) {
-    stbi_write_jpg("./out.jpg", PICTURE_WIDTH, PICTURE_HEIGHT, 3, static_cast<void*>(picture.data()), 100);
+    stbi_write_jpg("./out.jpg", PICTURE_WIDTH, PICTURE_HEIGHT, CHANNELS_NUM,
+            static_cast<void*>(picture.data()), PICTURE_WIDTH * CHANNELS_NUM);
 }
 
 void free_resources(std::vector<Object*> &objects) {
