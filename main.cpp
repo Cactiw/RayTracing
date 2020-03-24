@@ -40,16 +40,13 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects) {
     return color;
 }
 
-std::vector<unsigned char> generate_picture(std::vector<Object*> &objects) {
-    std::vector<unsigned char> picture;
+std::vector<Color> generate_picture(std::vector<Object*> &objects) {
+    std::vector<Color> picture;
     for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
         for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
             auto beginPoint = Vec3f(0, 0, 0), endPoint = Vec3f(i, j, 100);
             auto ray = Ray(beginPoint, endPoint);
-            auto color = cast_ray(ray, objects);
-            picture.push_back(color.getR());
-            picture.push_back(color.getG());
-            picture.push_back(color.getB());
+            picture.push_back(cast_ray(ray, objects));
         }
     }
     return picture;
@@ -60,24 +57,8 @@ Vec3f randomise_point() {
 }
 
 
-void save_picture(std::vector<unsigned char> & picture) {
-//    std::vector<unsigned char> finalPicture;
-//    for (auto color: picture) {
-//        finalPicture.push_back(color.getR());
-//        finalPicture.push_back(color.getG());
-//        finalPicture.push_back(color.getB());
-//    }
-//    stbi_write_jpg("./out.jpg", PICTURE_WIDTH, PICTURE_HEIGHT, CHANNELS_NUM,
-//            static_cast<void *>(finalPicture.data()), PICTURE_WIDTH * CHANNELS_NUM);
-//    stbi_write_jpg("./out.jpg", PICTURE_WIDTH, PICTURE_HEIGHT, 3, static_cast<void*>(picture.data()), 100);
-
-    std::ofstream ofs;
-    ofs.open("./out.ppm");
-    ofs << "P6\n" << PICTURE_WIDTH << " " << PICTURE_HEIGHT << "\n255\n";
-    for (auto c: picture) {
-        ofs << c;
-    }
-    ofs.close();
+void save_picture(std::vector<Color> & picture) {
+    stbi_write_jpg("./out.jpg", PICTURE_WIDTH, PICTURE_HEIGHT, 3, static_cast<void*>(picture.data()), 100);
 }
 
 void free_resources(std::vector<Object*> &objects) {
