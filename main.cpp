@@ -12,7 +12,7 @@
 #include "classes/Ray.h"
 #include "classes/Color.h"
 #include "vector.cpp"
-
+#include "objects/Light.h"
 
 
 enum {
@@ -30,9 +30,14 @@ const Color BACKGROUND_COLOR = Color(BACKGROUND_COLOR_1, BACKGROUND_COLOR_2, BAC
 Color cast_ray(Ray &ray, std::vector<Object*> &objects) {
     float min_dist = std::numeric_limits<float>::max();
     Color color = BACKGROUND_COLOR;
+    float brightness = 0;
+    Vec3f hitPoint, normal;
     for (const auto& object: objects) {
-        float dist = object->check_intersect(ray);
+        Vec3f tempHitPoint, tempNormal;
+        float dist = object->check_intersect(ray, tempHitPoint, tempNormal);
         if (dist > 0 && dist < min_dist) {
+            hitPoint = tempHitPoint;
+            normal = tempNormal;
             std::cout << "Intersect " << ray.getTargetPoint().x << " " << ray.getTargetPoint().y << std::endl;
             min_dist = dist;
             color = object->getColor();
@@ -71,15 +76,21 @@ void free_resources(std::vector<Object*> &objects) {
     }
 }
 
+void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
+    objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. + 400, PICTURE_HEIGHT / 2. + 350,
+                                       PICTURE_WIDTH / 2. + 300), Color(255, 255, 255), 300));
+    objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. + 250, PICTURE_HEIGHT / 2. + 250,
+                                       PICTURE_WIDTH / 2. + 100), Color(150, 0, 0), 150));
+    objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. - 400, PICTURE_HEIGHT / 2.,
+                                       PICTURE_WIDTH / 2. + 300), Color(0, 150, 50), 100));
+}
+
 int main() {
     std::vector <Object*> objects;
+    std::vector <Light*> lights;
 
-    objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. + 400, PICTURE_HEIGHT / 2. + 350, 
-            PICTURE_WIDTH / 2. + 300), Color(255, 255, 255), 300));
-    objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. + 250, PICTURE_HEIGHT / 2. + 250,
-            PICTURE_WIDTH / 2. + 100), Color(150, 0, 0), 150));
-    objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. - 400, PICTURE_HEIGHT / 2.,
-            PICTURE_WIDTH / 2. + 300), Color(0, 150, 50), 100));
+    add_objects(objects, lights);
+
     auto pic = generate_picture(objects);
     save_picture(pic);
     free_resources(objects);
