@@ -3,6 +3,8 @@
 #include <fstream>
 #include <cmath>
 
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+
 #include "stb_image_write.h"
 
 #include "objects/Object.h"
@@ -11,7 +13,6 @@
 #include "classes/Color.h"
 #include "vector.cpp"
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 
 
 enum {
@@ -56,13 +57,7 @@ Vec3f randomise_point() {
 
 
 void save_picture(std::vector<Color> & picture) {
-    std::ofstream ofs;
-    ofs.open("./out.ppm");
-    ofs << "P6\n" << PICTURE_WIDTH << " " << PICTURE_HEIGHT << "\n255\n";
-    for (auto color: picture) {
-        ofs << color.getR() << color.getG() << color.getB();
-    }
-    ofs.close();
+    stbi_write_jpg("./out.jpg", PICTURE_WIDTH, PICTURE_HEIGHT, 3, static_cast<void*>(picture.data()), 100);
 }
 
 void free_resources(std::vector<Object*> &objects) {
