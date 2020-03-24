@@ -46,8 +46,8 @@ std::vector<Color> generate_picture(std::vector<Object*> &objects) {
     for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
         for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
 //            auto beginPoint = Vec3f(PICTURE_HEIGHT / 2., PICTURE_WIDTH / 2., 0);
-            auto beginPoint = Vec3f(i, j, 0);
-            auto endPoint = Vec3f(i, j, PICTURE_WIDTH / 2.);
+            auto beginPoint = Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0);
+            auto endPoint = Vec3f(j, i, PICTURE_WIDTH / 2.);
             auto ray = Ray(beginPoint, endPoint);
             picture.push_back(cast_ray(ray, objects));
         }
@@ -74,7 +74,8 @@ void free_resources(std::vector<Object*> &objects) {
 int main() {
     std::vector <Object*> objects;
 
-    objects.push_back(new Sphere(Vec3f(100, 100, 150), Color(255, 255, 255), 50));
+    objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. + 400, PICTURE_HEIGHT / 2. + 350, 
+            PICTURE_WIDTH / 2. + 300), Color(255, 255, 255), 50));
     auto pic = generate_picture(objects);
     save_picture(pic);
     free_resources(objects);
