@@ -20,33 +20,44 @@ enum {
     PICTURE_HEIGHT = 1080,
     FOV = 70,
     CHANNELS_NUM = 3,
-    BACKGROUND_COLOR_1 = 0,
-    BACKGROUND_COLOR_2 = 0,
-    BACKGROUND_COLOR_3 = 0
+    BACKGROUND_COLOR_1 = 70,
+    BACKGROUND_COLOR_2 = 70,
+    BACKGROUND_COLOR_3 = 100
 };
 
 const Color BACKGROUND_COLOR = Color(BACKGROUND_COLOR_1, BACKGROUND_COLOR_2, BACKGROUND_COLOR_3);
 
-Color cast_ray(Ray &ray, std::vector<Object*> &objects) {
+Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lights) {
     float min_dist = std::numeric_limits<float>::max();
     Color color = BACKGROUND_COLOR;
     float brightness = 0;
     Vec3f hitPoint, normal;
+    bool hit = false;
     for (const auto& object: objects) {
         Vec3f tempHitPoint, tempNormal;
         float dist = object->check_intersect(ray, tempHitPoint, tempNormal);
         if (dist > 0 && dist < min_dist) {
             hitPoint = tempHitPoint;
             normal = tempNormal;
-            std::cout << "Intersect " << ray.getTargetPoint().x << " " << ray.getTargetPoint().y << std::endl;
+//            std::cout << "Intersect " << ray.getTargetPoint().x << " " << ray.getTargetPoint().y << std::endl;
             min_dist = dist;
             color = object->getColor();
+            hit = true;  // Для отслеживания наличия пересечений - иначе свет не считаем
         }
     }
-    return color;
+
+    if (hit) {
+        for (auto light: lights) {
+            Vec3f toLight = (light->getCenter() - hitPoint).normalize();
+            brightness += light->getBrightness() * std::max(0.f, toLight.dotProduct(normal));
+        }
+    } else {
+        brightness = 1;
+    }
+    return color * brightness;
 }
 
-std::vector<Color> generate_picture(std::vector<Object*> &objects) {
+std::vector<Color> generate_picture(std::vector<Object*> &objects, std::vector<Light*> &lights) {
     std::vector<Color> picture;
     for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
         for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
@@ -54,7 +65,7 @@ std::vector<Color> generate_picture(std::vector<Object*> &objects) {
             auto beginPoint = Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0);
             auto endPoint = Vec3f(j, i, PICTURE_WIDTH / 2.);
             auto ray = Ray(beginPoint, endPoint);
-            picture.push_back(cast_ray(ray, objects));
+            picture.push_back(cast_ray(ray, objects, lights));
         }
     }
     return picture;
@@ -78,11 +89,14 @@ void free_resources(std::vector<Object*> &objects) {
 
 void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
     objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. + 400, PICTURE_HEIGHT / 2. + 350,
-                                       PICTURE_WIDTH / 2. + 300), Color(255, 255, 255), 300));
-    objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. + 250, PICTURE_HEIGHT / 2. + 250,
+                                       PICTURE_WIDTH / 2. + 300), Color(30, 30, 180), 300));
+    objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. + 250, PICTURE_HEIGHT / 2. - 250,
                                        PICTURE_WIDTH / 2. + 100), Color(150, 0, 0), 150));
     objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. - 400, PICTURE_HEIGHT / 2.,
                                        PICTURE_WIDTH / 2. + 300), Color(0, 150, 50), 100));
+
+    lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2, 0, PICTURE_WIDTH / 2. - 200),
+            1.5));
 }
 
 int main() {
@@ -91,7 +105,7 @@ int main() {
 
     add_objects(objects, lights);
 
-    auto pic = generate_picture(objects);
+    auto pic = generate_picture(objects, lights);
     save_picture(pic);
     free_resources(objects);
     return 0;
