@@ -14,6 +14,8 @@ public:
     [[nodiscard]] unsigned char getR() const;
     [[nodiscard]] unsigned char getG() const;
     [[nodiscard]] unsigned char getB() const;
+
+    Color operator * (float a) const;
 };
 
 
