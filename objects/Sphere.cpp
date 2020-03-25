@@ -32,8 +32,8 @@ float Sphere::check_intersect(const Ray &ray, Vec3f &hitPoint, Vec3f &normal) co
     }
 
     float t = t0;
-    hitPoint = ray.getTargetPoint() + ray.getDirection() * t;
-    normal = (hitPoint - getCenter());
+    hitPoint = ray.getBeginPoint() + ray.getDirection() * t;
+    normal = (hitPoint - getCenter()).normalize();
 
     return t;
 }
