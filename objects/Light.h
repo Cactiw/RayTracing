@@ -13,6 +13,8 @@ class Light: public Object {
 
 public:
     Light(Vec3f position, float brightness);
+
+    [[nodiscard]] float getBrightness() const;
 };
 
 

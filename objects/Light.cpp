@@ -7,3 +7,7 @@
 Light::Light(Vec3f position, float brightness): Object(Vec3f(position), Color(255, 255, 255)) {
     this->brightness = brightness;
 }
+
+float Light::getBrightness() const {
+    return this->brightness;
+}
