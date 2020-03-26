@@ -63,7 +63,7 @@ std::vector<Color> generate_picture(std::vector<Object*> &objects, std::vector<L
         for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
 //            auto beginPoint = Vec3f(PICTURE_HEIGHT / 2., PICTURE_WIDTH / 2., 0);
             auto beginPoint = Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0);
-            auto endPoint = Vec3f(j, i, PICTURE_WIDTH / 2.);
+            auto endPoint = Vec3f(j, i, PICTURE_WIDTH);
             auto ray = Ray(beginPoint, endPoint);
             picture.push_back(cast_ray(ray, objects, lights));
         }
@@ -89,13 +89,13 @@ void free_resources(std::vector<Object*> &objects) {
 
 void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
     objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. + 400, PICTURE_HEIGHT / 2. + 350,
-                                       PICTURE_WIDTH / 2. + 300), Color(30, 30, 180), 300));
+                                       PICTURE_WIDTH), Color(30, 30, 180), 200));
     objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. + 250, PICTURE_HEIGHT / 2. - 250,
-                                       PICTURE_WIDTH / 2. + 100), Color(150, 0, 0), 150));
+                                       PICTURE_WIDTH), Color(150, 0, 0), 150));
     objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. - 400, PICTURE_HEIGHT / 2.,
-                                       PICTURE_WIDTH / 2. + 300), Color(0, 150, 50), 100));
+                                       PICTURE_WIDTH + 300), Color(0, 150, 50), 100));
 
-    lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2, 0, PICTURE_WIDTH / 2. - 200),
+    lights.push_back(new Light(Vec3f(PICTURE_WIDTH, -200, PICTURE_WIDTH - 1000),
             1.5));
 }
 
