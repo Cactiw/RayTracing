@@ -16,7 +16,7 @@ class Sphere : public Object{
 
 public:
 
-    Sphere(Vec3f ctr, Color clr, float radius) : Object(ctr, clr) {
+    Sphere(Vec3f center, Material material, float radius) : Object(center, material) {
         this->radius = radius;
         this->radius2 = radius * radius;
     }

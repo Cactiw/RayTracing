@@ -6,9 +6,13 @@
 #include "Object.h"
 
 Color Object::getColor() const {
-    return this->color;
+    return this->getMaterial().getColor();
 }
 
 Vec3f Object::getCenter() const {
     return this->center;
+}
+
+Material Object::getMaterial() const {
+    return this->material;
 }

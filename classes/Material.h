@@ -21,5 +21,6 @@ public:
     [[nodiscard]] float getSpecular() const;
 };
 
+const Material BLANK_MATERIAL = Material(Color(0, 0, 0), 0, 0);
 
 #endif //MACHINEGRAPHICS1TASK_MATERIAL_H

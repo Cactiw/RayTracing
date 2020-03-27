@@ -3,8 +3,9 @@
 //
 
 #include "Light.h"
+#include "../classes/Material.h"
 
-Light::Light(Vec3f position, float brightness): Object(Vec3f(position), Color(255, 255, 255)) {
+Light::Light(Vec3f position, float brightness): Object(Vec3f(position), BLANK_MATERIAL) {
     this->brightness = brightness;
 }
 

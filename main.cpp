@@ -89,11 +89,14 @@ void free_resources(std::vector<Object*> &objects) {
 
 void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
     objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. + 400, PICTURE_HEIGHT / 2. + 350,
-                                       PICTURE_WIDTH), Color(30, 30, 180), 200));
+                                       PICTURE_WIDTH), Material(Color(30, 30, 180),
+                                               0.5, 0.5), 200));
     objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. + 250, PICTURE_HEIGHT / 2. - 250,
-                                       PICTURE_WIDTH), Color(150, 0, 0), 150));
+                                       PICTURE_WIDTH), Material(Color(150, 0, 0),
+                                               0.5, 0.5), 150));
     objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2. - 400, PICTURE_HEIGHT / 2.,
-                                       PICTURE_WIDTH + 300), Color(0, 150, 50), 100));
+                                       PICTURE_WIDTH + 300),Material(Color(0, 150, 50),
+                                               0.5, 0.5), 100));
 
     lights.push_back(new Light(Vec3f(PICTURE_WIDTH, -200, PICTURE_WIDTH - 1000),
             1.5));
