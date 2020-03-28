@@ -30,15 +30,17 @@ const Color BACKGROUND_COLOR = Color(BACKGROUND_COLOR_1, BACKGROUND_COLOR_2, BAC
 Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lights) {
     float min_dist = std::numeric_limits<float>::max();
     Color color = BACKGROUND_COLOR;
-    float brightness = 0;
+    float brightness = 0, glareBrightness = 0;
     Vec3f hitPoint, normal;
     bool hit = false;
+    Object* hitObject = nullptr;
     for (const auto& object: objects) {
         Vec3f tempHitPoint, tempNormal;
         float dist = object->check_intersect(ray, tempHitPoint, tempNormal);
         if (dist > 0 && dist < min_dist) {
             hitPoint = tempHitPoint;
             normal = tempNormal;
+            hitObject = object;
 //            std::cout << "Intersect " << ray.getTargetPoint().x << " " << ray.getTargetPoint().y << std::endl;
             min_dist = dist;
             color = object->getColor();
@@ -47,14 +49,20 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
     }
 
     if (hit) {
+//        Vec3f toViewer = hitPoint - ray.getBeginPoint();
         for (auto light: lights) {
             Vec3f toLight = (light->getCenter() - hitPoint).normalize();
             brightness += light->getBrightness() * std::max(0.f, toLight.dotProduct(normal));
+            Vec3f reflect = ((2 * (toLight.dotProduct(normal)) * normal) - toLight).normalize();
+            glareBrightness += std::max(0.f,
+                hitObject->getMaterial().getSpecular() * light->getBrightness() *
+                powf(reflect.dotProduct(normal), hitObject->getMaterial().getShininess()) * 50);
         }
     } else {
         brightness = 1;
+        glareBrightness = 0;
     }
-    return color * brightness;
+    return color * brightness + UNIT_COLOR * glareBrightness;
 }
 
 std::vector<Color> generate_picture(std::vector<Object*> &objects, std::vector<Light*> &lights) {
