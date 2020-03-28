@@ -11,16 +11,19 @@
 class Material {
 
     Color color;
-    float reflection;
+    float diffuse;
     float specular;
+    float shininess;
 
 public:
-    Material(Color color, float reflection, float specular): color(color), reflection(reflection), specular(specular) {}
+    Material(Color color, float diffuse, float specular, float shininess):
+        color(color), diffuse(diffuse), specular(specular), shininess(shininess) {}
     [[nodiscard]] Color getColor() const;
-    [[nodiscard]] float getReflection() const;
+    [[nodiscard]] float getDiffuse() const;
     [[nodiscard]] float getSpecular() const;
+    [[nodiscard]] float getShininess() const;
 };
 
-const Material BLANK_MATERIAL = Material(Color(0, 0, 0), 0, 0);
+const Material BLANK_MATERIAL = Material(Color(0, 0, 0), 0, 0, 0);
 
 #endif //MACHINEGRAPHICS1TASK_MATERIAL_H
