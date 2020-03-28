@@ -16,7 +16,10 @@ public:
     [[nodiscard]] unsigned char getB() const;
 
     Color operator * (float a) const;
+    Color operator + (const Color &other) const;
 };
+
+const Color UNIT_COLOR = Color(1, 1, 1);
 
 
 #endif //MACHINEGRAPHICS1TASK_COLOR_H
