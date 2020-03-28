@@ -31,6 +31,9 @@ template <typename T> struct vec<3,T> {
     vec<3, T> operator * (float a) const {
         return vec<3, T>(this->x * a, this->y * a, this->z * a);
     }
+    friend vec<3, T> operator* (float a, vec<3, T> v) {
+        return vec<3, T>(v.x * a, v.y * a, v.z * a);
+    }
 
     float dotProduct(const vec<3, T> other) const {
 //        auto new_this = this->normalize();
