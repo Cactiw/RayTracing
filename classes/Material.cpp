@@ -19,3 +19,7 @@ float Material::getSpecular() const {
 float Material::getShininess() const {
     return this->shininess;
 }
+
+MATERIAL_TYPE Material::getType() const {
+    return this->type;
+}

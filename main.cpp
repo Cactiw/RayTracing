@@ -120,15 +120,21 @@ void free_resources(std::vector<Object*> &objects) {
 }
 
 void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
-    objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2. + 350,
-                                       PICTURE_WIDTH), Material(Color(30, 30, 180),
-                                               1, 1.2, 40), 200));
-    objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2. - 250,
-                                       PICTURE_WIDTH), Material(Color(150, 0, 0),
-                                               1, 1.2, 40), 150));
-    objects.push_back(new Sphere(Vec3f(PICTURE_WIDTH/ 2. + 300, 230,
-                                       PICTURE_WIDTH - 350),Material(Color(0, 150, 50),
-                                               1, 1.2, 40), 50));
+    objects.push_back(new Sphere(
+            Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2. + 350, PICTURE_WIDTH),
+            Material(NON_TRANSPARENT, Color(30, 30, 180),
+                    1, 1.2, 40),
+            200));
+    objects.push_back(new Sphere(
+            Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2. - 250, PICTURE_WIDTH),
+            Material(NON_TRANSPARENT, Color(150, 0, 0),
+                    1, 1.2, 40),
+            150));
+    objects.push_back(new Sphere(
+            Vec3f(PICTURE_WIDTH/ 2. + 300, 230, PICTURE_WIDTH - 350),
+            Material(NON_TRANSPARENT, Color(0, 150, 50),
+                    1, 1.2, 40),
+            50));
 
     lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., PICTURE_WIDTH - 1000),0.8));
     lights.push_back(new Light(Vec3f(PICTURE_WIDTH, 0, PICTURE_WIDTH - 1000),0.8));
