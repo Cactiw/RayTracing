@@ -36,4 +36,14 @@ public:
 const Material BLANK_MATERIAL = Material(NON_TRANSPARENT,
         Color(0, 0, 0), 0, 0, 0);
 
+const Material BLUE_FULL = Material(NON_TRANSPARENT, Color(30, 30, 180),
+                                    1, 1.2, 40);
+const Material RED_FULL = Material(NON_TRANSPARENT, Color(150, 0, 0),
+                                   1, 1.2, 40);
+const Material GREEN_FULL = Material(NON_TRANSPARENT, Color(0, 150, 50),
+                                     1, 1.2, 40);
+
+const Material MIRROR = Material(TRANSPARENT, Color(20, 20, 20),
+        1, 1.2, 1500);
+
 #endif //MACHINEGRAPHICS1TASK_MATERIAL_H
