@@ -14,7 +14,7 @@ class Ray {
     Vec3f direction;
 
 public:
-    Ray(Vec3f &bp, Vec3f &tp);
+    Ray(Vec3f bp, Vec3f tp);
 
     [[nodiscard]] Vec3f getBeginPoint() const;
     [[nodiscard]] Vec3f getTargetPoint() const;

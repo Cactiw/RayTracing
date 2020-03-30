@@ -4,7 +4,7 @@
 
 #include "Ray.h"
 
-Ray::Ray(Vec3f &bp, Vec3f &tp): beginPoint(bp), targetPoint(tp) {
+Ray::Ray(Vec3f bp, Vec3f tp): beginPoint(bp), targetPoint(tp) {
     direction = (targetPoint - beginPoint).normalize();
 }
 
