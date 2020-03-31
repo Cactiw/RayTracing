@@ -8,8 +8,8 @@ Color Material::getColor() const {
     return this->color;
 }
 
-float Material::getDiffuse() const {
-    return this->diffuse;
+float Material::getReflectivity() const {
+    return this->reflectivity;
 }
 
 float Material::getSpecular() const {
@@ -22,4 +22,12 @@ float Material::getShininess() const {
 
 MATERIAL_TYPE Material::getType() const {
     return this->type;
+}
+
+float Material::getRefractive() const {
+    return this->refractive;
+}
+
+bool Material::isRefractive() const {
+    return this->getRefractive() != 0;
 }
