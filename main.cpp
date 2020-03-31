@@ -52,10 +52,7 @@ float find_first_intersect(const Ray &ray, const std::vector<Object*> &objects, 
 }
 
 Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lights, int depth = 0) {
-    Color color = BACKGROUND_COLOR, reflectColor = Color(0, 0, 0);
-    if (depth > 1) {
-        std::cout << depth << std::endl;
-    }
+    Color color = BACKGROUND_COLOR, reflectColor = Color(0, 0, 0), refractColor(0, 0, 0);
     if (depth >= DEPTH_LIMIT) {
         return BACKGROUND_COLOR;
     }
@@ -66,11 +63,23 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
     bool hit = hitObject != nullptr;
 
     if (hit) {
-        Vec3f originPoint = hitPoint + normal * 1e-3;
+        Vec3f originPoint = hitPoint + normal * 1e-2;
+//        Vec3f originPointInside = hitPoint - normal * 1e-2;
+        Vec3f originPointInside = ray.getDirection().dotProduct(normal) > 0 ? hitPoint + normal * 1e-2 :
+                hitPoint - normal * 1e-2;
         if (hitObject->getMaterial().getType() == TRANSPARENT) {
+            // Вычисление отражение и рефракции
             Ray newRay = Ray(originPoint, originPoint + reflectVector(ray.getDirection(), normal));
             reflectColor = cast_ray(newRay, objects, lights, depth + 1);
-            //return reflectColor;
+
+            if (hitObject->getMaterial().isRefractive()) {
+                Ray refractionRay(originPointInside,
+                        originPointInside +
+                            refract(ray.getDirection(), normal, hitObject->getMaterial().getRefractive()).normalize()
+                        );
+                refractColor = cast_ray(refractionRay, objects, lights, depth + 1);
+            }
+
         }
 
         Object* skipObject = nullptr;
@@ -81,7 +90,7 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
             Vec3f toLight = light->getCenter() - hitPoint;
             float lightDistance = toLight.norm();
             toLight = toLight.normalize();
-//            Vec3f originPoint = toLight.dotProduct(normal) > 0 ? hitPoint + normal * 1e-3 : hitPoint - normal * 1e-3;
+//            Vec3f originPoint = toLight.dotProduct(normal) > 0 ? hitPoint + normal * 1e-2 : hitPoint - normal * 1e-2;
             Vec3f lightPoint = light->getCenter();
             Ray toLightRay(originPoint, lightPoint);
             float intersectDistance = find_first_intersect(toLightRay, objects, skipObject, skip1, skip2, skipColor);
@@ -98,10 +107,12 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
             }
         }
     } else {
-        brightness = 1;
-        glareBrightness = 0;
+        return color;
     }
-    return color * brightness + UNIT_COLOR * glareBrightness + reflectColor;
+    return color * brightness +
+        UNIT_COLOR * glareBrightness +
+        reflectColor * hitObject->getMaterial().getReflectivity() +
+        refractColor * 1;
 }
 
 std::vector<Color> generate_picture(std::vector<Object*> &objects, std::vector<Light*> &lights) {
@@ -136,8 +147,8 @@ void free_resources(std::vector<Object*> &objects) {
 
 void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
     objects.push_back(new Sphere(
-            Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2. + 100, PICTURE_WIDTH + 1000),
-            MIRROR, 200));
+            Vec3f(PICTURE_WIDTH / 2. - 300, PICTURE_HEIGHT / 2. - 100, PICTURE_WIDTH - 400),
+            GLASS, 100));
     objects.push_back(new Sphere(
             Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2. - 250, PICTURE_WIDTH),
             RED_FULL, 150));
@@ -145,9 +156,16 @@ void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
             Vec3f(PICTURE_WIDTH/ 2. + 300, 230, PICTURE_WIDTH - 350),
             GREEN_FULL, 50));
 
+
+//    objects.push_back(new Sphere(
+//            Vec3f(PICTURE_WIDTH/ 2. + 300, 230, +100),
+//            GREEN_FULL, 10000));
+
     lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., PICTURE_WIDTH - 1000),0.8));
     lights.push_back(new Light(Vec3f(PICTURE_WIDTH, 0, PICTURE_WIDTH - 1000),0.8));
     lights.push_back(new Light(Vec3f(0, 0, PICTURE_WIDTH + 1000),0.8));
+//    lights.push_back(new Light(Vec3f(300, PICTURE_WIDTH / 2., PICTURE_WIDTH - 1300),0.8));
+//    lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0),2));
 }
 
 int main() {
