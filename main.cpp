@@ -9,10 +9,14 @@
 
 #include "objects/Object.h"
 #include "objects/Sphere.h"
+#include "objects/Light.h"
+
 #include "classes/Ray.h"
 #include "classes/Color.h"
+
 #include "computations/vector.cpp"
-#include "objects/Light.h"
+#include "computations/physics.cpp"
+
 
 
 enum {
@@ -46,11 +50,6 @@ float find_first_intersect(const Ray &ray, const std::vector<Object*> &objects, 
     }
     return hitObject != nullptr ? min_dist: -1;
 }
-
-Vec3f reflectVector(const Vec3f &v, const Vec3f &normal) {
-    return ((2 * (-v.dotProduct(normal)) * normal) + v).normalize();
-}
-
 
 Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lights, int depth = 0) {
     Color color = BACKGROUND_COLOR, reflectColor = Color(0, 0, 0);
