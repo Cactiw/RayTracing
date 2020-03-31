@@ -31,7 +31,7 @@ template <typename T> struct vec<3,T> {
     vec<3, T> operator * (float a) const {
         return vec<3, T>(this->x * a, this->y * a, this->z * a);
     }
-    vec<3, T> operator- () {
+    vec<3, T> operator- () const {
         return vec<3, T>(-this->x, -this->y, -this->z);
     }
     friend vec<3, T> operator* (float a, vec<3, T> v) {
