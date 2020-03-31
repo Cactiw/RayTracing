@@ -5,7 +5,7 @@
 #ifndef MACHINEGRAPHICS1TASK_RAY_H
 #define MACHINEGRAPHICS1TASK_RAY_H
 
-#include "../vector.cpp"
+#include "../computations/vector.cpp"
 
 
 class Ray {

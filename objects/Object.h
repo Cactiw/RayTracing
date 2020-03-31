@@ -5,7 +5,7 @@
 #ifndef MACHINEGRAPHICS1TASK_OBJECT_H
 #define MACHINEGRAPHICS1TASK_OBJECT_H
 
-#include "../vector.cpp"
+#include "../computations/vector.cpp"
 #include "../classes/Ray.h"
 #include "../classes/Color.h"
 #include "../classes/Material.h"

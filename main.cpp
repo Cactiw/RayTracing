@@ -11,7 +11,7 @@
 #include "objects/Sphere.h"
 #include "classes/Ray.h"
 #include "classes/Color.h"
-#include "vector.cpp"
+#include "computations/vector.cpp"
 #include "objects/Light.h"
 
 
