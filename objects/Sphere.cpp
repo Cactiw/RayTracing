@@ -18,7 +18,7 @@ float Sphere::check_intersect(const Ray &ray, Vec3f &hitPoint, Vec3f &normal) co
     float t0, t1;
     Vec3f L = getCenter() - ray.getBeginPoint();
     float tca = L.dotProduct(ray.getDirection());
-    if (tca < 0) return -1;
+//    if (tca < 0) return -1;  Если центр перед лучём
     float d2 = L.dotProduct(L) - tca * tca;
     if (d2 > radius2) return -1;
     float thc = sqrt(radius2 - d2);
@@ -34,6 +34,9 @@ float Sphere::check_intersect(const Ray &ray, Vec3f &hitPoint, Vec3f &normal) co
     float t = t0;
     hitPoint = ray.getBeginPoint() + ray.getDirection() * t;
     normal = (hitPoint - getCenter()).normalize();
+    if (normal.dotProduct(ray.getDirection()) > 0) {
+        normal = - normal;
+    }
 
     return t;
 }
