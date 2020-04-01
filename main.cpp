@@ -64,9 +64,7 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
 
     if (hit) {
         Vec3f originPoint = hitPoint + normal * 1e-2;
-//        Vec3f originPointInside = hitPoint - normal * 1e-2;
-        Vec3f originPointInside = ray.getDirection().dotProduct(normal) > 0 ? hitPoint + normal * 1e-2 :
-                hitPoint - normal * 1e-2;
+        Vec3f originPointInside = hitPoint - normal * 1e-2;
         if (hitObject->getMaterial().getType() == TRANSPARENT) {
             // Вычисление отражение и рефракции
             Ray newRay = Ray(originPoint, originPoint + reflectVector(ray.getDirection(), normal));
