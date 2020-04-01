@@ -23,7 +23,7 @@ public:
 
     [[nodiscard]] float getRadius() const;
 
-    [[nodiscard]] float check_intersect(const Ray &ray, Vec3f &hitPoint, Vec3f &normal) const override;
+    [[nodiscard]] float check_intersect(const Ray &ray, Vec3f &hitPoint, Vec3f &normal, Vec3f &trueNormal) const override;
 
 };
 

@@ -34,14 +34,15 @@ const Color BACKGROUND_COLOR = Color(BACKGROUND_COLOR_1, BACKGROUND_COLOR_2, BAC
 
 // Ищет первое пересечение луча с объектами сцены
 float find_first_intersect(const Ray &ray, const std::vector<Object*> &objects, Object* &hitObject,
-        Vec3f &hitPoint, Vec3f &normal, Color &color) {
+        Vec3f &hitPoint, Vec3f &normal, Vec3f &trueNormal, Color &color) {
     float min_dist = std::numeric_limits<float>::max();
     for (const auto& object: objects) {
-        Vec3f tempHitPoint, tempNormal;
-        float dist = object->check_intersect(ray, tempHitPoint, tempNormal);
+        Vec3f tempHitPoint, tempNormal, tempTrueNormal;
+        float dist = object->check_intersect(ray, tempHitPoint, tempNormal, tempTrueNormal);
         if (dist > 0 && dist < min_dist) {
             hitPoint = tempHitPoint;
             normal = tempNormal;
+            trueNormal = tempTrueNormal;
             hitObject = object;
 //            std::cout << "Intersect " << ray.getTargetPoint().x << " " << ray.getTargetPoint().y << std::endl;
             min_dist = dist;
@@ -57,9 +58,9 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
         return BACKGROUND_COLOR;
     }
     float brightness = 0, glareBrightness = 0;
-    Vec3f hitPoint, normal;
+    Vec3f hitPoint, normal, trueNormal;
     Object* hitObject = nullptr;
-    float min_dist = find_first_intersect(ray, objects, hitObject, hitPoint, normal, color);
+    float min_dist = find_first_intersect(ray, objects, hitObject, hitPoint, normal, trueNormal, color);
     bool hit = hitObject != nullptr;
 
     if (hit) {
@@ -73,7 +74,7 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
             if (hitObject->getMaterial().isRefractive()) {
                 Ray refractionRay(originPointInside,
                         originPointInside +
-                            refract(ray.getDirection(), normal, hitObject->getMaterial().getRefractive()).normalize()
+                            refract(ray.getDirection(), trueNormal, hitObject->getMaterial().getRefractive()).normalize()
                         );
                 refractColor = cast_ray(refractionRay, objects, lights, depth + 1);
             }
@@ -81,7 +82,7 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
         }
 
         Object* skipObject = nullptr;
-        Vec3f skip1, skip2;
+        Vec3f skip1, skip2, skip3;
         Color skipColor = BACKGROUND_COLOR;
 //        Vec3f toViewer = hitPoint - ray.getBeginPoint();
         for (auto light: lights) {
@@ -91,7 +92,8 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
 //            Vec3f originPoint = toLight.dotProduct(normal) > 0 ? hitPoint + normal * 1e-2 : hitPoint - normal * 1e-2;
             Vec3f lightPoint = light->getCenter();
             Ray toLightRay(originPoint, lightPoint);
-            float intersectDistance = find_first_intersect(toLightRay, objects, skipObject, skip1, skip2, skipColor);
+            float intersectDistance = find_first_intersect(toLightRay, objects, skipObject, skip1, skip2,
+                    skip3, skipColor);
             if (intersectDistance > 0 && intersectDistance < lightDistance) {
                 // Пересечение, ничего не прибавляем, точка в тени
             } else {
@@ -145,8 +147,8 @@ void free_resources(std::vector<Object*> &objects) {
 
 void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
     objects.push_back(new Sphere(
-            Vec3f(PICTURE_WIDTH / 2. - 300, PICTURE_HEIGHT / 2. - 100, PICTURE_WIDTH - 400),
-            GLASS, 100));
+            Vec3f(PICTURE_WIDTH / 2. - 150, PICTURE_HEIGHT / 2. - 100, PICTURE_WIDTH - 450),
+            GLASS, 150));
     objects.push_back(new Sphere(
             Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2. - 250, PICTURE_WIDTH),
             RED_FULL, 150));
@@ -160,9 +162,9 @@ void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
 //            GREEN_FULL, 10000));
 
     lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., PICTURE_WIDTH - 1000),0.8));
-    lights.push_back(new Light(Vec3f(PICTURE_WIDTH, 0, PICTURE_WIDTH - 1000),0.8));
+//    lights.push_back(new Light(Vec3f(PICTURE_WIDTH, 0, PICTURE_WIDTH - 1000),0.8));
     lights.push_back(new Light(Vec3f(0, 0, PICTURE_WIDTH + 1000),0.8));
-//    lights.push_back(new Light(Vec3f(300, PICTURE_WIDTH / 2., PICTURE_WIDTH - 1300),0.8));
+    lights.push_back(new Light(Vec3f(300, PICTURE_WIDTH / 2., PICTURE_WIDTH - 1300),0.8));
 //    lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0),2));
 }
 

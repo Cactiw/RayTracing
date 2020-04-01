@@ -14,7 +14,7 @@ float dot(const Vec3f &point, const Vec3f &center) {
     return norm * norm;
 }
 
-float Sphere::check_intersect(const Ray &ray, Vec3f &hitPoint, Vec3f &normal) const {
+float Sphere::check_intersect(const Ray &ray, Vec3f &hitPoint, Vec3f &normal, Vec3f &trueNormal) const {
     float t0, t1;
     Vec3f L = getCenter() - ray.getBeginPoint();
     float tca = L.dotProduct(ray.getDirection());
@@ -34,6 +34,7 @@ float Sphere::check_intersect(const Ray &ray, Vec3f &hitPoint, Vec3f &normal) co
     float t = t0;
     hitPoint = ray.getBeginPoint() + ray.getDirection() * t;
     normal = (hitPoint - getCenter()).normalize();
+    trueNormal = normal;
     if (normal.dotProduct(ray.getDirection()) > 0) {
         normal = - normal;
     }
