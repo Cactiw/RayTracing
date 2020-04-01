@@ -49,7 +49,7 @@ const Material GREEN_FULL = Material(NON_TRANSPARENT, Color(0, 150, 50),
 
 const Material MIRROR = Material(TRANSPARENT, Color(20, 20, 20),
         1, 1.2, 0, 1500);
-const Material GLASS = Material(TRANSPARENT, Color(20, 20, 20),
+const Material GLASS = Material(TRANSPARENT, Color(30, 30, 30),
         0, 1.2, 1.4, 15);
 
 #endif //MACHINEGRAPHICS1TASK_MATERIAL_H
