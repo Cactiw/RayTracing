@@ -41,3 +41,5 @@ float Sphere::check_intersect(const Ray &ray, Vec3f &hitPoint, Vec3f &normal, Ve
 
     return t;
 }
+
+Sphere::~Sphere() = default;

@@ -16,3 +16,5 @@ Vec3f Object::getCenter() const {
 Material Object::getMaterial() const {
     return this->material;
 }
+
+Object::~Object() = default;

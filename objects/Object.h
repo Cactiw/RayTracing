@@ -23,6 +23,8 @@ public:
     [[nodiscard]] Vec3f getCenter() const;
     [[nodiscard]] Material getMaterial() const;
     [[nodiscard]] Color getColor() const;
+
+    virtual ~Object();
 };
 
 
