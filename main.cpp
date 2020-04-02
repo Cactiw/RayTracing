@@ -2,6 +2,7 @@
 #include <vector>
 #include <fstream>
 #include <cmath>
+#include <omp.h>
 
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 
@@ -28,6 +29,7 @@ enum {
     BACKGROUND_COLOR_2 = 70,
     BACKGROUND_COLOR_3 = 100,
     DEPTH_LIMIT = 5,
+    THREADS_DEFAULT = 4
 };
 
 const Color BACKGROUND_COLOR = Color(BACKGROUND_COLOR_1, BACKGROUND_COLOR_2, BACKGROUND_COLOR_3);
@@ -60,7 +62,7 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
     float brightness = 0, glareBrightness = 0;
     Vec3f hitPoint, normal, trueNormal;
     Object* hitObject = nullptr;
-    float min_dist = find_first_intersect(ray, objects, hitObject, hitPoint, normal, trueNormal, color);
+    find_first_intersect(ray, objects, hitObject, hitPoint, normal, trueNormal, color);
     bool hit = hitObject != nullptr;
 
     if (hit) {
@@ -115,17 +117,23 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
         refractColor * 1;
 }
 
-std::vector<Color> generate_picture(std::vector<Object*> &objects, std::vector<Light*> &lights) {
+// Главный цикл генерации картинки
+std::vector<Color> generate_picture(std::vector<Object*> &objects, std::vector<Light*> &lights, int threads) {
     std::vector<Color> picture;
-    for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
-        for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
+    picture.resize(PICTURE_WIDTH * PICTURE_HEIGHT * sizeof(Color), UNIT_COLOR);
+    omp_set_num_threads(threads);
+    #pragma omp parallel for
+    for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
+        #pragma omp parallel for
+            for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
 //            auto beginPoint = Vec3f(PICTURE_HEIGHT / 2., PICTURE_WIDTH / 2., 0);
             auto beginPoint = Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0);
             auto endPoint = Vec3f(j, i, PICTURE_WIDTH);
             auto ray = Ray(beginPoint, endPoint);
-            picture.push_back(cast_ray(ray, objects, lights));
+            picture[j * (i + 1)] = cast_ray(ray, objects, lights);
         }
     }
+    #pragma omp barrier
     return picture;
 }
 
@@ -168,13 +176,24 @@ void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
 //    lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0),2));
 }
 
-int main() {
+int main(int argc, char** argv) {
     std::vector <Object*> objects;
     std::vector <Light*> lights;
 
     add_objects(objects, lights);
 
-    auto pic = generate_picture(objects, lights);
+    int threads = THREADS_DEFAULT;
+    if (argc > 1) {
+        for (int i = 1; i < argc; ++i) {
+            std::cout << argv[i] << std::endl;
+            if (strcmp(argv[i], "-threads") == 0) {
+                if (i + 1 < argc) {
+                    threads = int(strtol(argv[i + 1], nullptr, 10));
+                }
+            }
+        }
+    }
+    auto pic = generate_picture(objects, lights, threads);
     save_picture(pic);
     free_resources(objects);
     return 0;
