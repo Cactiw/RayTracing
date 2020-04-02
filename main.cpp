@@ -124,7 +124,7 @@ std::vector<std::vector<Color>> generate_picture(std::vector<Object*> &objects, 
     auto beginPoint = Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0);
     for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
         std::vector<Color> row(PICTURE_WIDTH, UNIT_COLOR);
-        #pragma omp parallel for
+        #pragma omp parallel for default(none) shared(row, beginPoint, i, objects, lights)
         for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
             auto endPoint = Vec3f(j, i, PICTURE_WIDTH);
             auto ray = Ray(beginPoint, endPoint);
@@ -132,6 +132,7 @@ std::vector<std::vector<Color>> generate_picture(std::vector<Object*> &objects, 
         }
         picture.push_back(row);
     }
+    #pragma omp barrier
     return picture;
 }
 
