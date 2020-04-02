@@ -37,11 +37,19 @@ template <typename T> struct vec<3,T> {
     friend vec<3, T> operator* (float a, vec<3, T> v) {
         return vec<3, T>(v.x * a, v.y * a, v.z * a);
     }
+    
     float dotProduct(const vec<3, T> other) const {
-//        auto new_this = this->normalize();
-//        auto new_other = other.normalize();
         return this->x * other.x + this->y * other.y + this-> z * other.z;
     }
+
+    vec<3, T> crossProduct(const vec<3, T> v) const {
+        vec<3, T> res;
+        res.x = this->y * v.z - this->z * v.y;
+        res.y = this->z * v.x - this->x * v.z;
+        res.z = this->x * v.y - this->y * v.x;
+        return res;
+    }
+
     float norm() { return std::sqrt(x*x+y*y+z*z); }
     vec<3,T> & normalize() {
         auto normSaved = norm();
