@@ -118,26 +118,34 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
 }
 
 // Главный цикл генерации картинки
-std::vector<Color> generate_picture(std::vector<Object*> &objects, std::vector<Light*> &lights, int threads) {
-    std::vector<Color> picture;
-    picture.resize(PICTURE_WIDTH * PICTURE_HEIGHT * sizeof(Color), UNIT_COLOR);
+std::vector<std::vector<Color>> generate_picture(std::vector<Object*> &objects, std::vector<Light*> &lights, int threads) {
+    std::vector<std::vector<Color>> picture;
     omp_set_num_threads(threads);
-    #pragma omp parallel for collapse(2)
     for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
+        std::vector<Color> row(PICTURE_WIDTH, UNIT_COLOR);
+#pragma omp parallel for
         for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
 //            auto beginPoint = Vec3f(PICTURE_HEIGHT / 2., PICTURE_WIDTH / 2., 0);
             auto beginPoint = Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0);
             auto endPoint = Vec3f(j, i, PICTURE_WIDTH);
             auto ray = Ray(beginPoint, endPoint);
-            picture[j * (i + 1)] = cast_ray(ray, objects, lights);
+            row[i] = cast_ray(ray, objects, lights);
         }
+#pragma omp barrier
+        picture.push_back(row);
     }
-    #pragma omp barrier
     return picture;
 }
 
 Vec3f randomise_point() {
     return Vec3f(int(std::rand() * 255), int(std::rand() * 255), int(std::rand() * 255));
+}
+
+void merge_picture(const std::vector<std::vector<Color>> &picture, std::vector<Color> &newImage) {
+    newImage.reserve(PICTURE_WIDTH * PICTURE_HEIGHT * sizeof(Color));
+    for (auto const &row: picture) {
+        std::move(row.begin(), row.end(), std::back_inserter(newImage));
+    }
 }
 
 
@@ -192,7 +200,9 @@ int main(int argc, char** argv) {
         }
     }
     auto pic = generate_picture(objects, lights, threads);
-    save_picture(pic);
+    std::vector<Color> newPicture;
+    merge_picture(pic, newPicture);
+    save_picture(newPicture);
     free_resources(objects);
     return 0;
 }
