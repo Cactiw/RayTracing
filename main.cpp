@@ -122,10 +122,9 @@ std::vector<Color> generate_picture(std::vector<Object*> &objects, std::vector<L
     std::vector<Color> picture;
     picture.resize(PICTURE_WIDTH * PICTURE_HEIGHT * sizeof(Color), UNIT_COLOR);
     omp_set_num_threads(threads);
-    #pragma omp parallel for
+    #pragma omp parallel for collapse(2)
     for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
-        #pragma omp parallel for
-            for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
+        for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
 //            auto beginPoint = Vec3f(PICTURE_HEIGHT / 2., PICTURE_WIDTH / 2., 0);
             auto beginPoint = Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0);
             auto endPoint = Vec3f(j, i, PICTURE_WIDTH);
@@ -185,7 +184,6 @@ int main(int argc, char** argv) {
     int threads = THREADS_DEFAULT;
     if (argc > 1) {
         for (int i = 1; i < argc; ++i) {
-            std::cout << argv[i] << std::endl;
             if (strcmp(argv[i], "-threads") == 0) {
                 if (i + 1 < argc) {
                     threads = int(strtol(argv[i + 1], nullptr, 10));
