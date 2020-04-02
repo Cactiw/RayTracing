@@ -33,7 +33,7 @@ set (CMAKE_CXX_STANDARD 17)
 
 add_executable(rt main.cpp computations/vector.cpp objects/Object.h objects/Object.cpp
         objects/Sphere.h objects/Sphere.cpp classes/Ray.cpp classes/Ray.h classes/Color.cpp classes/Color.h
-        objects/Light.cpp objects/Light.h classes/Material.cpp classes/Material.h)
+        objects/Light.cpp objects/Light.h classes/Material.cpp classes/Material.h objects/Triangle.cpp objects/Triangle.h)
 
 add_custom_target(clean-all
    COMMAND ${CMAKE_BUILD_TOOL} clean
