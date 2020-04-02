@@ -119,31 +119,25 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
 
 // Главный цикл генерации картинки
 std::vector<std::vector<Color>> generate_picture(std::vector<Object*> &objects, std::vector<Light*> &lights, int threads) {
-    std::vector<std::vector<Color>> picture;
+    std::vector<std::vector<Color>> picture(PICTURE_HEIGHT);
     omp_set_num_threads(threads);
-    for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
+    auto beginPoint = Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0);
+    for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
         std::vector<Color> row(PICTURE_WIDTH, UNIT_COLOR);
-#pragma omp parallel for
-        for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
-//            auto beginPoint = Vec3f(PICTURE_HEIGHT / 2., PICTURE_WIDTH / 2., 0);
-            auto beginPoint = Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0);
+        #pragma omp parallel for
+        for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
             auto endPoint = Vec3f(j, i, PICTURE_WIDTH);
             auto ray = Ray(beginPoint, endPoint);
-            row[i] = cast_ray(ray, objects, lights);
+            row[j] = cast_ray(ray, objects, lights);
         }
-#pragma omp barrier
         picture.push_back(row);
     }
     return picture;
 }
 
-Vec3f randomise_point() {
-    return Vec3f(int(std::rand() * 255), int(std::rand() * 255), int(std::rand() * 255));
-}
-
 void merge_picture(const std::vector<std::vector<Color>> &picture, std::vector<Color> &newImage) {
-    newImage.reserve(PICTURE_WIDTH * PICTURE_HEIGHT * sizeof(Color));
-    for (auto const &row: picture) {
+    newImage.reserve(PICTURE_WIDTH * PICTURE_HEIGHT);
+    for (auto &row: picture) {
         std::move(row.begin(), row.end(), std::back_inserter(newImage));
     }
 }
