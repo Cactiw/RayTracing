@@ -17,7 +17,7 @@
 
 #include "computations/vector.cpp"
 #include "computations/physics.cpp"
-
+#include "objects/Figure.h"
 
 
 enum {
@@ -123,8 +123,9 @@ std::vector<std::vector<Color>> generate_picture(std::vector<Object*> &objects, 
     omp_set_num_threads(threads);
     auto beginPoint = Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0);
     for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
+        std::cout << "Generating " << i << " row (of " << PICTURE_HEIGHT << ")..." << std::endl;
         std::vector<Color> row(PICTURE_WIDTH, UNIT_COLOR);
-        #pragma omp parallel for default(none) shared(row, beginPoint, i, objects, lights)
+        #pragma omp parallel for default(none) shared(row, beginPoint, i, objects, lights, std::cout)
         for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
             auto endPoint = Vec3f(j, i, PICTURE_WIDTH);
             auto ray = Ray(beginPoint, endPoint);
@@ -165,6 +166,11 @@ void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
     objects.push_back(new Sphere(
             Vec3f(PICTURE_WIDTH/ 2. + 300, 230, PICTURE_WIDTH - 350),
             GREEN_FULL, 50));
+
+    objects.push_back(new Figure("resources/duck.obj",
+            Vec3f(PICTURE_WIDTH - 400, PICTURE_HEIGHT - 250., PICTURE_WIDTH),
+            -20,
+            RED_FULL));
 
 
 //    objects.push_back(new Sphere(

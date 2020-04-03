@@ -2,12 +2,13 @@
 // Created by cactiw on 02.04.2020.
 //
 
+#include <iostream>
 #include "Triangle.h"
 
 Triangle::Triangle(Vec3f a, Vec3f b, Vec3f c): a(a), b(b), c(c) {
     this->e1 = b - a;
     this->e2 = c - a;
-    this->normal = e1.crossProduct(e2);
+    this->normal = e1.crossProduct(e2).normalize();
 }
 
 Vec3f Triangle::getA() const {
@@ -51,7 +52,6 @@ float Triangle::check_intersect(const Ray &ray, Vec3f &hitPoint, Vec3f &normal, 
 
     if (u >= 0 && v >= 0 && 1 - u - v >= 0) {
         // Попали в треугольник
-
         //
         normal = this->getNormal().dotProduct(ray.getDirection()) < 0 ? this->getNormal() : - this->getNormal();
         trueNormal = normal; // Может это и неверно, обратить внимание

@@ -8,8 +8,8 @@
 #include <iostream>
 #include "Figure.h"
 
-Figure::Figure(std::vector<Triangle> triangles, Vec3f center, float size, Material material): triangles(triangles),
-        Object(center, material) {}
+Figure::Figure(std::vector<Triangle> triangles, Vec3f center, float size, Material material): Object(center, material),
+    triangles(triangles){}
 
 std::vector<std::string> split_string(const std::string &str) {
     std::istringstream iss(str);
@@ -53,6 +53,8 @@ float Figure::check_intersect(const Ray &ray, Vec3f &hitPoint, Vec3f &normal, Ve
         Vec3f tempHitPoint, tempNormal, tempTrueNormal;
         float dist = triangle.check_intersect(ray, tempHitPoint, tempNormal, tempTrueNormal);
         if (dist > 0 && dist < min_dist) {
+            min_dist = dist;
+
             hitPoint = tempHitPoint;
             normal = tempNormal;
             trueNormal = tempTrueNormal;
