@@ -1,6 +1,7 @@
 cmake_minimum_required (VERSION 3.8)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE} -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_RELEASE}")
+set (CMAKE_CXX_STANDARD 17)
 
 project (rt)
 
@@ -29,8 +30,6 @@ enable_cxx_compiler_flag_if_supported("-Wall")
 # get rid of annoying MSVC warnings.
 add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
-set (CMAKE_CXX_STANDARD 17)
-
 add_executable(rt main.cpp computations/vector.cpp objects/Object.h objects/Object.cpp
         objects/Sphere.h objects/Sphere.cpp classes/Ray.cpp classes/Ray.h classes/Color.cpp classes/Color.h
         objects/Light.cpp objects/Light.h classes/Material.cpp classes/Material.h objects/Triangle.cpp objects/Triangle.h objects/Figure.cpp objects/Figure.h)
@@ -43,6 +42,12 @@ add_custom_target(clean-all
 add_custom_target(run
    COMMAND make
    COMMAND ./rt
+)
+
+add_executable(debug-rt
+        main.cpp computations/vector.cpp objects/Object.h objects/Object.cpp
+        objects/Sphere.h objects/Sphere.cpp classes/Ray.cpp classes/Ray.h classes/Color.cpp classes/Color.h
+        objects/Light.cpp objects/Light.h classes/Material.cpp classes/Material.h objects/Triangle.cpp objects/Triangle.h objects/Figure.cpp objects/Figure.h
 )
 
 add_custom_target(omp
