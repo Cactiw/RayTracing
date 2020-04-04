@@ -22,7 +22,8 @@ public:
 
     [[nodiscard]] Vec3f getCenter() const;
     [[nodiscard]] Material getMaterial() const;
-    [[nodiscard]] Color getColor() const;
+    [[nodiscard]] virtual Color getColor() const;
+    [[nodiscard]] virtual Color getColor(const Vec3f &point) const;
 
     virtual ~Object();
 };

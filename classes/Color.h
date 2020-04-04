@@ -41,6 +41,8 @@ public:
 };
 
 const Color UNIT_COLOR = Color(1, 1, 1);
+const Color WHITE_COLOR = Color(255, 255, 255);
+const Color YELLOW_COLOR = Color(242, 249, 59);
 
 
 #endif //MACHINEGRAPHICS1TASK_COLOR_H

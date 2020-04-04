@@ -31,7 +31,7 @@ enum {
     BACKGROUND_COLOR_3 = 100,
     DEPTH_LIMIT = 5,
     THREADS_DEFAULT = 4,
-    ANTIALIASING_DEFAULT = 1
+    ANTIALIASING_DEFAULT = 1,
 };
 
 const Color BACKGROUND_COLOR = Color(BACKGROUND_COLOR_1, BACKGROUND_COLOR_2, BACKGROUND_COLOR_3);
@@ -50,7 +50,7 @@ float find_first_intersect(const Ray &ray, const std::vector<Object*> &objects, 
             hitObject = object;
 //            std::cout << "Intersect " << ray.getTargetPoint().x << " " << ray.getTargetPoint().y << std::endl;
             min_dist = dist;
-            color = object->getColor();
+            color = object->getColor(hitPoint);
         }
     }
     return hitObject != nullptr ? min_dist: -1;
@@ -179,32 +179,27 @@ void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
             Vec3f(PICTURE_WIDTH/ 2. + 300, 230, PICTURE_WIDTH * 2 - 350),
             GREEN_FULL, 100));
 
-//    objects.push_back(new Figure("resources/duck.obj",
-//            Vec3f(PICTURE_WIDTH / 2. + 200, PICTURE_HEIGHT - 750., PICTURE_WIDTH),
-//            -50,
-//            BLUE_FULL));
+    objects.push_back(new Figure("resources/duck.obj",
+            Vec3f(PICTURE_WIDTH / 2. + 200, PICTURE_HEIGHT - 750., PICTURE_WIDTH),
+            -50,
+            BLUE_FULL));
 //    objects.push_back(new Figure("resources/cube.obj",
 //            Vec3f(PICTURE_WIDTH / 2. + 200, PICTURE_HEIGHT - 750., PICTURE_WIDTH),
 //            100,
 //            BLUE_FULL));
-    objects.push_back(new Figure("resources/cat.obj",
-            Vec3f(PICTURE_WIDTH / 2. - 300, PICTURE_HEIGHT - 300., PICTURE_WIDTH),
-            -100,
-            YELLOW_FULL));
+//    objects.push_back(new Figure("resources/cat.obj",
+//            Vec3f(PICTURE_WIDTH / 2. - 300, PICTURE_HEIGHT - 300., PICTURE_WIDTH),
+//            -100,
+//            YELLOW_FULL));
 
     objects.push_back(new Surface(
-            Vec3f(1, PICTURE_HEIGHT, 0), Vec3f(3, PICTURE_HEIGHT, 0), Vec3f(2, PICTURE_HEIGHT, 1), BLUE_FULL
+            Vec3f(1, PICTURE_HEIGHT, 0), Vec3f(3, PICTURE_HEIGHT, 0),
+            Vec3f(2, PICTURE_HEIGHT, 1), BLUE_FULL, WHITE_COLOR
             ));
 
     lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., PICTURE_WIDTH - 1000),1.6));
-//    lights.push_back(new Light(Vec3f(PICTURE_WIDTH, 0, PICTURE_WIDTH - 1000),0.8));
-//    lights.push_back(new Light(Vec3f(0, 0, PICTURE_WIDTH + 1000),0.8));
-//    lights.push_back(new Light(Vec3f(300, PICTURE_WIDTH / 2., PICTURE_WIDTH - 1300),0.8));
     lights.push_back(new Light(Vec3f(PICTURE_WIDTH/ 2., 0, PICTURE_WIDTH + 4000), 1));
     lights.push_back(new Light(Vec3f(PICTURE_WIDTH/ 2., 0, PICTURE_WIDTH), 1));
-//    lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2. - 500, PICTURE_WIDTH * 2), 1));
-//    lights.push_back(new Light(Vec3f(PICTURE_WIDTH/ 2., -1000, PICTURE_WIDTH + 2000), 1));
-//    lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0),2));
 }
 
 int main(int argc, char** argv) {

@@ -17,4 +17,8 @@ Material Object::getMaterial() const {
     return this->material;
 }
 
+Color Object::getColor(const Vec3f &point) const {
+    return this->getColor();
+}
+
 Object::~Object() = default;
