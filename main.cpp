@@ -183,10 +183,14 @@ void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
 //            Vec3f(PICTURE_WIDTH / 2. + 200, PICTURE_HEIGHT - 750., PICTURE_WIDTH),
 //            -50,
 //            BLUE_FULL));
-    objects.push_back(new Figure("resources/cube.obj",
-            Vec3f(PICTURE_WIDTH / 2. + 200, PICTURE_HEIGHT - 750., PICTURE_WIDTH),
-            100,
-            BLUE_FULL));
+//    objects.push_back(new Figure("resources/cube.obj",
+//            Vec3f(PICTURE_WIDTH / 2. + 200, PICTURE_HEIGHT - 750., PICTURE_WIDTH),
+//            100,
+//            BLUE_FULL));
+    objects.push_back(new Figure("resources/cat.obj",
+            Vec3f(PICTURE_WIDTH / 2. - 300, PICTURE_HEIGHT - 300., PICTURE_WIDTH),
+            -100,
+            YELLOW_FULL));
 
     objects.push_back(new Surface(
             Vec3f(1, PICTURE_HEIGHT, 0), Vec3f(3, PICTURE_HEIGHT, 0), Vec3f(2, PICTURE_HEIGHT, 1), BLUE_FULL
