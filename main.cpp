@@ -29,7 +29,8 @@ enum {
     BACKGROUND_COLOR_2 = 70,
     BACKGROUND_COLOR_3 = 100,
     DEPTH_LIMIT = 5,
-    THREADS_DEFAULT = 4
+    THREADS_DEFAULT = 4,
+    ANTIALIASING_DEFAULT = 1
 };
 
 const Color BACKGROUND_COLOR = Color(BACKGROUND_COLOR_1, BACKGROUND_COLOR_2, BACKGROUND_COLOR_3);
@@ -117,19 +118,29 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
         refractColor * 1;
 }
 
+float count_antialiasing_coefficient(int antialiasing) {
+    return 1.f / antialiasing;
+}
+
 // Главный цикл генерации картинки
-std::vector<std::vector<Color>> generate_picture(std::vector<Object*> &objects, std::vector<Light*> &lights, int threads) {
+std::vector<std::vector<Color>> generate_picture(std::vector<Object*> &objects, std::vector<Light*> &lights,
+        int threads, int antialiasing) {
     std::vector<std::vector<Color>> picture(PICTURE_HEIGHT);
     omp_set_num_threads(threads);
+    float offset = count_antialiasing_coefficient(antialiasing);
     auto beginPoint = Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0);
     for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
         std::cout << "Generating " << i << " row (of " << PICTURE_HEIGHT << ")..." << std::endl;
         std::vector<Color> row(PICTURE_WIDTH, UNIT_COLOR);
-        #pragma omp parallel for default(none) shared(row, beginPoint, i, objects, lights, std::cout)
+        #pragma omp parallel for default(none) shared(row, beginPoint, i, antialiasing, offset, objects, lights)
         for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
-            auto endPoint = Vec3f(j, i, PICTURE_WIDTH);
-            auto ray = Ray(beginPoint, endPoint);
-            row[j] = cast_ray(ray, objects, lights);
+            ColorSum totalColor(0, 0, 0);
+            for (int k = 0; k < antialiasing; ++k) {
+                auto endPoint = Vec3f(j + offset * k, i + offset * k, PICTURE_WIDTH);
+                auto ray = Ray(beginPoint, endPoint);
+                totalColor += cast_ray(ray, objects, lights);
+            }
+            row[j] = (totalColor / antialiasing).toColor();
         }
         picture.push_back(row);
     }
@@ -157,20 +168,20 @@ void free_resources(std::vector<Object*> &objects) {
 }
 
 void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
-    objects.push_back(new Sphere(
-            Vec3f(PICTURE_WIDTH / 2. - 150, PICTURE_HEIGHT / 2. - 100, PICTURE_WIDTH - 450),
-            GLASS, 150));
+//    objects.push_back(new Sphere(
+//            Vec3f(PICTURE_WIDTH / 2. - 150, PICTURE_HEIGHT / 2. - 100, PICTURE_WIDTH - 450),
+//            GLASS, 150));
     objects.push_back(new Sphere(
             Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2. - 250, PICTURE_WIDTH),
-            RED_FULL, 150));
+            RED_FULL, 200));
     objects.push_back(new Sphere(
             Vec3f(PICTURE_WIDTH/ 2. + 300, 230, PICTURE_WIDTH - 350),
             GREEN_FULL, 50));
 
     objects.push_back(new Figure("resources/duck.obj",
-            Vec3f(PICTURE_WIDTH - 400, PICTURE_HEIGHT - 250., PICTURE_WIDTH),
-            -20,
-            RED_FULL));
+            Vec3f(PICTURE_WIDTH / 2. + 200, PICTURE_HEIGHT - 750., PICTURE_WIDTH / 2.),
+            -50,
+            BLUE_FULL));
 
 
 //    objects.push_back(new Sphere(
@@ -191,16 +202,21 @@ int main(int argc, char** argv) {
     add_objects(objects, lights);
 
     int threads = THREADS_DEFAULT;
+    int antialiasing = ANTIALIASING_DEFAULT;
     if (argc > 1) {
         for (int i = 1; i < argc; ++i) {
             if (strcmp(argv[i], "-threads") == 0) {
                 if (i + 1 < argc) {
                     threads = int(strtol(argv[i + 1], nullptr, 10));
                 }
+            } else if (strcmp(argv[i], "-antialiasing") == 0) {
+                if (i + 1 < argc) {
+                    antialiasing = int(strtol(argv[i + 1], nullptr, 10));
+                }
             }
         }
     }
-    auto pic = generate_picture(objects, lights, threads);
+    auto pic = generate_picture(objects, lights, threads, antialiasing);
     std::vector<Color> newPicture;
     merge_picture(pic, newPicture);
     save_picture(newPicture);
