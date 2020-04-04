@@ -173,14 +173,14 @@ void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
 //            Vec3f(PICTURE_WIDTH / 2. - 150, PICTURE_HEIGHT / 2. - 100, PICTURE_WIDTH - 450),
 //            GLASS, 150));
     objects.push_back(new Sphere(
-            Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2. - 250, PICTURE_WIDTH),
+            Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2. - 250, PICTURE_WIDTH * 2),
             RED_FULL, 200));
     objects.push_back(new Sphere(
-            Vec3f(PICTURE_WIDTH/ 2. + 300, 230, PICTURE_WIDTH - 350),
-            GREEN_FULL, 50));
+            Vec3f(PICTURE_WIDTH/ 2. + 300, 230, PICTURE_WIDTH * 2 - 350),
+            GREEN_FULL, 100));
 
     objects.push_back(new Figure("resources/duck.obj",
-            Vec3f(PICTURE_WIDTH / 2. + 200, PICTURE_HEIGHT - 750., PICTURE_WIDTH / 2.),
+            Vec3f(PICTURE_WIDTH / 2. + 200, PICTURE_HEIGHT - 750., PICTURE_WIDTH),
             -50,
             BLUE_FULL));
 
@@ -188,14 +188,14 @@ void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
             Vec3f(1, PICTURE_HEIGHT, 0), Vec3f(3, PICTURE_HEIGHT, 0), Vec3f(2, PICTURE_HEIGHT, 1), BLUE_FULL
             ));
 
-//    objects.push_back(new Sphere(
-//            Vec3f(PICTURE_WIDTH/ 2. + 300, 230, +100),
-//            GREEN_FULL, 10000));
-
-    lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., PICTURE_WIDTH - 1000),0.8));
+    lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., PICTURE_WIDTH - 1000),1.6));
 //    lights.push_back(new Light(Vec3f(PICTURE_WIDTH, 0, PICTURE_WIDTH - 1000),0.8));
-    lights.push_back(new Light(Vec3f(0, 0, PICTURE_WIDTH + 1000),0.8));
-    lights.push_back(new Light(Vec3f(300, PICTURE_WIDTH / 2., PICTURE_WIDTH - 1300),0.8));
+//    lights.push_back(new Light(Vec3f(0, 0, PICTURE_WIDTH + 1000),0.8));
+//    lights.push_back(new Light(Vec3f(300, PICTURE_WIDTH / 2., PICTURE_WIDTH - 1300),0.8));
+    lights.push_back(new Light(Vec3f(PICTURE_WIDTH/ 2., 0, PICTURE_WIDTH + 4000), 1));
+    lights.push_back(new Light(Vec3f(PICTURE_WIDTH/ 2., 0, PICTURE_WIDTH), 1));
+//    lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2. - 500, PICTURE_WIDTH * 2), 1));
+//    lights.push_back(new Light(Vec3f(PICTURE_WIDTH/ 2., -1000, PICTURE_WIDTH + 2000), 1));
 //    lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0),2));
 }
 
