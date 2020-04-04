@@ -34,6 +34,5 @@ std::vector<Triangle> Square::toVector() const {
     std::vector<Triangle> v;
     v.push_back(t1);
     v.push_back(t2);
-    std::cout << "Vector returned" << std::endl;
     return v;
 }

@@ -46,6 +46,8 @@ const Material RED_FULL = Material(NON_TRANSPARENT, Color(150, 0, 0),
                                    0, 1.2, 0, 40);
 const Material GREEN_FULL = Material(NON_TRANSPARENT, Color(0, 150, 50),
                                      0, 1.2, 0, 40);
+const Material YELLOW_FULL = Material(NON_TRANSPARENT, Color(242, 249, 59),
+                                     0, 1.2, 0, 40);
 
 const Material MIRROR = Material(TRANSPARENT, Color(20, 20, 20),
         1, 1.2, 0, 10);
