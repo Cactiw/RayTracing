@@ -185,7 +185,7 @@ void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
 //            BLUE_FULL));
     objects.push_back(new Figure("resources/cube.obj",
             Vec3f(PICTURE_WIDTH / 2. + 200, PICTURE_HEIGHT - 750., PICTURE_WIDTH),
-            1,
+            100,
             BLUE_FULL));
 
     objects.push_back(new Surface(
