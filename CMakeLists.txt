@@ -32,7 +32,9 @@ add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
 add_executable(rt main.cpp computations/vector.cpp objects/Object.h objects/Object.cpp
         objects/Sphere.h objects/Sphere.cpp classes/Ray.cpp classes/Ray.h classes/Color.cpp classes/Color.h
-        objects/Light.cpp objects/Light.h classes/Material.cpp classes/Material.h objects/Triangle.cpp objects/Triangle.h objects/Figure.cpp objects/Figure.h objects/Surface.cpp objects/Surface.h)
+        objects/Light.cpp objects/Light.h classes/Material.cpp classes/Material.h objects/Triangle.cpp
+        objects/Triangle.h objects/Figure.cpp objects/Figure.h objects/Surface.cpp objects/Surface.h
+        objects/Square.cpp objects/Square.h)
 
 add_custom_target(clean-all
    COMMAND ${CMAKE_BUILD_TOOL} clean
@@ -48,7 +50,7 @@ add_executable(debug-rt
         main.cpp computations/vector.cpp objects/Object.h objects/Object.cpp
         objects/Sphere.h objects/Sphere.cpp classes/Ray.cpp classes/Ray.h classes/Color.cpp classes/Color.h
         objects/Light.cpp objects/Light.h classes/Material.cpp classes/Material.h objects/Triangle.cpp objects/Triangle.h objects/Figure.cpp objects/Figure.h
-        objects/Surface.cpp objects/Surface.h)
+        objects/Surface.cpp objects/Surface.h objects/Square.cpp objects/Square.h)
 
 add_custom_target(omp
    COMMAND g++ -fopenmp main.cpp computations/vector.cpp objects/Object.h objects/Object.cpp
