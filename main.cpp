@@ -179,9 +179,13 @@ void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
             Vec3f(PICTURE_WIDTH/ 2. + 300, 230, PICTURE_WIDTH * 2 - 350),
             GREEN_FULL, 100));
 
-    objects.push_back(new Figure("resources/duck.obj",
+//    objects.push_back(new Figure("resources/duck.obj",
+//            Vec3f(PICTURE_WIDTH / 2. + 200, PICTURE_HEIGHT - 750., PICTURE_WIDTH),
+//            -50,
+//            BLUE_FULL));
+    objects.push_back(new Figure("resources/cube.obj",
             Vec3f(PICTURE_WIDTH / 2. + 200, PICTURE_HEIGHT - 750., PICTURE_WIDTH),
-            -50,
+            1,
             BLUE_FULL));
 
     objects.push_back(new Surface(
