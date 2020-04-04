@@ -17,6 +17,27 @@ public:
 
     Color operator * (float a) const;
     Color operator + (const Color &other) const;
+    Color operator += (const Color &other);
+    Color operator / (float a) const;
+};
+
+// Класс для безопасного суммирования цветов (значения - инты, проверок на переполнение нет до момента приведения
+// обратно к Color)
+class ColorSum {
+    int r, g, b;
+public:
+    ColorSum(int r, int g, int b): r(r), g(g), b(b) {}
+
+    [[nodiscard]] int getR() const;
+    [[nodiscard]] int getG() const;
+    [[nodiscard]] int getB() const;
+
+    ColorSum operator * (float a) const;
+    ColorSum operator + (const Color &other) const;
+    ColorSum operator += (const Color &other);
+    ColorSum operator / (float a) const;
+
+    [[nodiscard]] Color toColor() const;
 };
 
 const Color UNIT_COLOR = Color(1, 1, 1);
