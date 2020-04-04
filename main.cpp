@@ -68,8 +68,8 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
     bool hit = hitObject != nullptr;
 
     if (hit) {
-        Vec3f originPoint = hitPoint + normal * 1e-2;
-        Vec3f originPointInside = hitPoint - normal * 1e-2;
+        Vec3f originPoint = hitPoint + normal * 1e-1;
+        Vec3f originPointInside = hitPoint - normal * 1e-1;
         if (hitObject->getMaterial().getType() == TRANSPARENT) {
             // Вычисление отражение и рефракции
             Ray newRay = Ray(originPoint, originPoint + reflectVector(ray.getDirection(), normal));
@@ -93,7 +93,7 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
             Vec3f toLight = light->getCenter() - hitPoint;
             float lightDistance = toLight.norm();
             toLight = toLight.normalize();
-//            Vec3f originPoint = toLight.dotProduct(normal) > 0 ? hitPoint + normal * 1e-2 : hitPoint - normal * 1e-2;
+//            Vec3f originPoint = toLight.dotProduct(normal) > 0 ? hitPoint + normal * 1e-1 : hitPoint - normal * 1e-1;
             Vec3f lightPoint = light->getCenter();
             Ray toLightRay(originPoint, lightPoint);
             float intersectDistance = find_first_intersect(toLightRay, objects, skipObject, skip1, skip2,
