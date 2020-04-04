@@ -18,6 +18,7 @@
 #include "computations/vector.cpp"
 #include "computations/physics.cpp"
 #include "objects/Figure.h"
+#include "objects/Surface.h"
 
 
 enum {
@@ -183,6 +184,9 @@ void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
             -50,
             BLUE_FULL));
 
+    objects.push_back(new Surface(
+            Vec3f(1, PICTURE_HEIGHT, 0), Vec3f(3, PICTURE_HEIGHT, 0), Vec3f(2, PICTURE_HEIGHT, 1), BLUE_FULL
+            ));
 
 //    objects.push_back(new Sphere(
 //            Vec3f(PICTURE_WIDTH/ 2. + 300, 230, +100),
