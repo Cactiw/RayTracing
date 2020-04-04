@@ -6,6 +6,7 @@
 #include <iterator>
 #include <sstream>
 #include <iostream>
+#include <algorithm>
 #include "Figure.h"
 #include "Square.h"
 
@@ -18,6 +19,16 @@ std::vector<std::string> split_string(const std::string &str) {
             std::istream_iterator<std::string>());
 }
 
+// Удаляет в строке всё, после символа '/'
+std::vector<std::string> remove_useless_vars(std::vector<std::string> strings) {
+    std::vector<std::string> newVector;
+    for (auto &str: strings) {
+        std::replace(str.begin(), str.end(), '/', ' ');
+        newVector.push_back(split_string(str).at(0));
+    }
+    return newVector;
+}
+
 
 Figure::Figure(const std::string &path, Vec3f center, float size, Material material): Object(center, material) {
     std::ifstream f;
@@ -26,20 +37,25 @@ Figure::Figure(const std::string &path, Vec3f center, float size, Material mater
     std::vector<Vec3f> points;
     std::vector<Triangle> triangles;
     while (std::getline(f, line)) {
-        std::cout << line << std::endl;
         if (line[0] == 'v') {
             // Добавить точку
+            if (line[1] != ' ') {
+                // Нам интересны только вершины полигонов
+                continue;
+            }
             auto coordinates = split_string(line.substr(2));
             points.emplace_back(center +
             Vec3f(atof(coordinates[0].c_str()),
                     atof(coordinates[1].c_str()),
                     atof(coordinates[2].c_str())) * size);
-//            std::cout << atof(coordinates[0].c_str()) << " " << atof(coordinates[1].c_str()) << " " <<
-//                    atof(coordinates[2].c_str()) << std::endl;
         } else if (line[0] == 'f') {
             // Добавить полигон (треугольник, или прямоугольник)
-            auto point_nums = split_string(line.substr(2));
+            auto point_nums = remove_useless_vars(split_string(line.substr(2)));
             if (point_nums.size() == 3) {
+                if (line[1] != ' ') {
+                    // Нам интересны только координаты вершин полигонов
+                    continue;
+                }
                 // Добавляем треугольник
                 triangles.emplace_back(Triangle(points[atoi(point_nums[0].c_str()) - 1],
                                                 points[atoi(point_nums[1].c_str()) - 1],
