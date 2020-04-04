@@ -51,5 +51,7 @@ const Material MIRROR = Material(TRANSPARENT, Color(20, 20, 20),
         1, 1.2, 0, 10);
 const Material GLASS = Material(TRANSPARENT, Color(30, 30, 30),
         0, 1.2, 1.4, 10);
+const Material CLEAN_GLASS = Material(TRANSPARENT, Color(30, 30, 30),
+        0, 1.2, 1, 10);
 
 #endif //MACHINEGRAPHICS1TASK_MATERIAL_H
