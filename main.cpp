@@ -190,6 +190,9 @@ int main(int argc, char** argv) {
             } else if (strcmp(argv[i], "-scene") == 0) {
                 if (i + 1 < argc) {
                     scene = int(strtol(argv[i + 1], nullptr, 10));
+                    if (scene == 2) {
+                        antialiasing = 4;
+                    }
                 }
             }
         }
