@@ -21,14 +21,16 @@
 #include "objects/Surface.h"
 #include "classes/Picture.h"
 
+#include "scenes.cpp"
+
 const Color BACKGROUND_COLOR = Color(BACKGROUND_COLOR_1, BACKGROUND_COLOR_2, BACKGROUND_COLOR_3);
 
 Color get_background_color(const Ray &ray, Picture &backgroundImage) {
     if (!backgroundImage.isOpen()) {
         return BACKGROUND_COLOR;
     }
-    int pos = backgroundImage.getWidth() * (int)ray.getTargetPoint().y + ray.getTargetPoint().x;
-    if (pos >= (int)backgroundImage.getColors().size()) {
+    unsigned int pos = backgroundImage.getWidth() * (int)ray.getTargetPoint().y + ray.getTargetPoint().x;
+    if (pos >= backgroundImage.getColors().size()) {
         std::cerr << "Warning, returning background" << std::endl;
         return BACKGROUND_COLOR;
     }
@@ -129,7 +131,7 @@ std::vector<std::vector<Color>> generate_picture(std::vector<Object*> &objects, 
     float offset = count_antialiasing_coefficient(antialiasing);
     auto beginPoint = Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0);
     for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
-        std::cout << "Generating " << i << " row (of " << PICTURE_HEIGHT << ")..." << std::endl;
+//        std::cout << "Generating " << i << " row (of " << PICTURE_HEIGHT << ")..." << std::endl;
         std::vector<Color> row(PICTURE_WIDTH, UNIT_COLOR);
         #pragma omp parallel for default(none) shared(row, beginPoint, i, antialiasing, offset, objects, lights, backgroundImage)
         for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
@@ -161,67 +163,12 @@ void free_resources(std::vector<T*> &objects) {
     }
 }
 
-void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights, Picture &backgroundImage) {
-//    objects.push_back(new Sphere(
-//            Vec3f(PICTURE_WIDTH / 2. - 150, PICTURE_HEIGHT / 2. - 100, PICTURE_WIDTH - 450),
-//            GLASS, 150));
-    objects.push_back(new Sphere(
-            Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., PICTURE_WIDTH + 1000),
-            MIRROR, 200));
-    objects.push_back(new Sphere(
-            Vec3f(PICTURE_WIDTH/ 2. + 300, 230, PICTURE_WIDTH * 2 - 350),
-            GREEN_FULL, 100));
-
-//    objects.push_back(new Figure("resources/duck.obj",
-//            Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT - 500., PICTURE_WIDTH),
-//            -50,
-//            BLUE_FULL));
-//    objects.push_back(new Figure("resources/cube.obj",
-//            Vec3f(PICTURE_WIDTH / 2. + 200, PICTURE_HEIGHT - 750., PICTURE_WIDTH),
-//            100,
-//            BLUE_FULL));
-//    objects.push_back(new Figure("resources/cat.obj",
-//            Vec3f(PICTURE_WIDTH / 2. - 300, PICTURE_HEIGHT - 300., PICTURE_WIDTH),
-//            -100,
-//            YELLOW_FULL));
-
-    /*objects.push_back(new Surface(
-            Vec3f(1, 0, 0), Vec3f(3, 0, 0),
-            Vec3f(2, 0, 1), WhITE_FULL
-            ));objects.push_back(new Surface(
-            Vec3f(1, PICTURE_HEIGHT, 0), Vec3f(3, PICTURE_HEIGHT, 0),
-            Vec3f(2, PICTURE_HEIGHT, 1), BLUE_FULL, WHITE_COLOR
-            ));
-    objects.push_back(new Surface(
-            Vec3f(0, 0, 0), Vec3f(0, 1, 0),
-            Vec3f(0, 0, 1), GREEN_FULL
-            ));
-    objects.push_back(new Surface(
-            Vec3f(0, 0, 5000), Vec3f(0, 1, 5000),
-            Vec3f(1, 0, 5000), YELLOW_FULL
-            ));
-    objects.push_back(new Surface(
-            Vec3f(PICTURE_WIDTH, 0, 0), Vec3f(PICTURE_WIDTH, 1, 0),
-            Vec3f(PICTURE_WIDTH, 0, 1), RED_FULL
-            ));
-    objects.push_back(new Surface(
-            Vec3f(0, 0, -1), Vec3f(0, 1, -1),
-            Vec3f(1, 0, -1), YELLOW_FULL
-    ));*/
-
-    lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., PICTURE_WIDTH - 1000),1.6));
-    lights.push_back(new Light(Vec3f(PICTURE_WIDTH/ 2., 0, PICTURE_WIDTH + 4000), 1));
-    lights.push_back(new Light(Vec3f(PICTURE_WIDTH/ 2., 0, PICTURE_WIDTH), 1));
-
-    backgroundImage = Picture("resources/background.jpg");
-}
-
 int main(int argc, char** argv) {
     std::vector <Object*> objects;
     std::vector <Light*> lights;
 
     Picture backgroundImage{};
-    add_objects(objects, lights, backgroundImage);
+    int scene = 1;
 
     int threads = THREADS_DEFAULT;
     int antialiasing = ANTIALIASING_DEFAULT;
@@ -240,9 +187,14 @@ int main(int argc, char** argv) {
                 if (i + 1 < argc) {
                     path = argv[i + 1];
                 }
+            } else if (strcmp(argv[i], "-scene") == 0) {
+                if (i + 1 < argc) {
+                    scene = int(strtol(argv[i + 1], nullptr, 10));
+                }
             }
         }
     }
+    create_scene(objects, lights, backgroundImage, scene);
     auto pic = generate_picture(objects, lights, backgroundImage, threads, antialiasing);
     std::vector<Color> newPicture;
     merge_picture(pic, newPicture);
