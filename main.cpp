@@ -3,10 +3,10 @@
 #include <fstream>
 #include <cmath>
 #include <omp.h>
+#include <cstring>
 
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-
-#include "stb_image_write.h"
+#include "utils/constants.cpp"
+#include "utils/files.h"
 
 #include "objects/Object.h"
 #include "objects/Sphere.h"
@@ -19,22 +19,31 @@
 #include "computations/physics.cpp"
 #include "objects/Figure.h"
 #include "objects/Surface.h"
-
-
-enum {
-    PICTURE_WIDTH = 1920,
-    PICTURE_HEIGHT = 1080,
-    FOV = 70,
-    CHANNELS_NUM = 3,
-    BACKGROUND_COLOR_1 = 70,
-    BACKGROUND_COLOR_2 = 70,
-    BACKGROUND_COLOR_3 = 100,
-    DEPTH_LIMIT = 5,
-    THREADS_DEFAULT = 4,
-    ANTIALIASING_DEFAULT = 1,
-};
+#include "classes/Picture.h"
 
 const Color BACKGROUND_COLOR = Color(BACKGROUND_COLOR_1, BACKGROUND_COLOR_2, BACKGROUND_COLOR_3);
+
+Color get_background_color(const Ray &ray, Picture &backgroundImage) {
+    if (!backgroundImage.isOpen()) {
+        return BACKGROUND_COLOR;
+    }
+//    std::cout << (ray.getDirection().y * (ray.getDirection().x + 1) * backgroundImage.getHalfPixels() +
+//        ray.getDirection().z < 0 ? backgroundImage.getHalfPixels() : 0) << std::endl;
+
+//    int pos = int(ray.getTargetPoint().y * (ray.getTargetPoint().x + 1) * backgroundImage.getHalfPixels());
+//    return backgroundImage.getColors().at(
+//            std::abs(pos) + pos > 0 ? backgroundImage.getHalfPixels() : 0);
+////            ray.getDirection().z < 0 ? backgroundImage.getHalfPixels() : 0);
+//    Vec3f direction = ray.getDirection().normalize();
+//    int x = (1.0 + direction.x) * backgroundImage.getWidth() / 2.0;
+//    int y = (1.0 + direction.y) * backgroundImage.getHeight() / 2.;
+    int x = ray.getTargetPoint().x;
+    int y = ray.getTargetPoint().y;
+//    std::cout << x << " " << y << " " << x + y << std::endl;
+    int pos = backgroundImage.getWidth() * y + x;
+//    std::cout << x << " " << y << " " << pos << std::endl;
+    return backgroundImage.getColors().at(pos);
+}
 
 // Ищет первое пересечение луча с объектами сцены
 float find_first_intersect(const Ray &ray, const std::vector<Object*> &objects, Object* &hitObject,
@@ -56,10 +65,12 @@ float find_first_intersect(const Ray &ray, const std::vector<Object*> &objects, 
     return hitObject != nullptr ? min_dist: -1;
 }
 
-Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lights, int depth = 0) {
-    Color color = BACKGROUND_COLOR, reflectColor = Color(0, 0, 0), refractColor(0, 0, 0);
+Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lights, Picture &backgroundImage,
+        int depth = 0) {
+    Color color = get_background_color(ray, backgroundImage);
+    Color reflectColor = Color(0, 0, 0), refractColor(0, 0, 0);
     if (depth >= DEPTH_LIMIT) {
-        return BACKGROUND_COLOR;
+        return get_background_color(ray, backgroundImage);
     }
     float brightness = 0, glareBrightness = 0;
     Vec3f hitPoint, normal, trueNormal;
@@ -73,21 +84,21 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
         if (hitObject->getMaterial().getType() == TRANSPARENT) {
             // Вычисление отражение и рефракции
             Ray newRay = Ray(originPoint, originPoint + reflectVector(ray.getDirection(), normal));
-            reflectColor = cast_ray(newRay, objects, lights, depth + 1);
+            reflectColor = cast_ray(newRay, objects, lights, backgroundImage, depth + 1);
 
             if (hitObject->getMaterial().isRefractive()) {
                 Ray refractionRay(originPointInside,
                         originPointInside +
                             refract(ray.getDirection(), trueNormal, hitObject->getMaterial().getRefractive()).normalize()
                         );
-                refractColor = cast_ray(refractionRay, objects, lights, depth + 1);
+                refractColor = cast_ray(refractionRay, objects, lights, backgroundImage, depth + 1);
             }
 
         }
 
         Object* skipObject = nullptr;
         Vec3f skip1, skip2, skip3;
-        Color skipColor = BACKGROUND_COLOR;
+        Color skipColor = get_background_color(ray, backgroundImage);
 //        Vec3f toViewer = hitPoint - ray.getBeginPoint();
         for (auto light: lights) {
             Vec3f toLight = light->getCenter() - hitPoint;
@@ -125,7 +136,7 @@ float count_antialiasing_coefficient(int antialiasing) {
 
 // Главный цикл генерации картинки
 std::vector<std::vector<Color>> generate_picture(std::vector<Object*> &objects, std::vector<Light*> &lights,
-        int threads, int antialiasing) {
+        Picture &backgroundImage, int threads, int antialiasing) {
     std::vector<std::vector<Color>> picture(PICTURE_HEIGHT);
     omp_set_num_threads(threads);
     float offset = count_antialiasing_coefficient(antialiasing);
@@ -133,13 +144,13 @@ std::vector<std::vector<Color>> generate_picture(std::vector<Object*> &objects, 
     for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
         std::cout << "Generating " << i << " row (of " << PICTURE_HEIGHT << ")..." << std::endl;
         std::vector<Color> row(PICTURE_WIDTH, UNIT_COLOR);
-        #pragma omp parallel for default(none) shared(row, beginPoint, i, antialiasing, offset, objects, lights)
+        #pragma omp parallel for default(none) shared(row, beginPoint, i, antialiasing, offset, objects, lights, backgroundImage)
         for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
             ColorSum totalColor(0, 0, 0);
             for (int k = 0; k < antialiasing; ++k) {
                 auto endPoint = Vec3f(j + offset * k, i + offset * k, PICTURE_WIDTH);
                 auto ray = Ray(beginPoint, endPoint);
-                totalColor += cast_ray(ray, objects, lights);
+                totalColor += cast_ray(ray, objects, lights, backgroundImage);
             }
             row[j] = (totalColor / antialiasing).toColor();
         }
@@ -163,7 +174,7 @@ void free_resources(std::vector<T*> &objects) {
     }
 }
 
-void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
+void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights, Picture &backgroundImage) {
 //    objects.push_back(new Sphere(
 //            Vec3f(PICTURE_WIDTH / 2. - 150, PICTURE_HEIGHT / 2. - 100, PICTURE_WIDTH - 450),
 //            GLASS, 150));
@@ -174,10 +185,10 @@ void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
             Vec3f(PICTURE_WIDTH/ 2. + 300, 230, PICTURE_WIDTH * 2 - 350),
             GREEN_FULL, 100));
 
-    objects.push_back(new Figure("resources/duck.obj",
-            Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT - 500., PICTURE_WIDTH),
-            -50,
-            BLUE_FULL));
+//    objects.push_back(new Figure("resources/duck.obj",
+//            Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT - 500., PICTURE_WIDTH),
+//            -50,
+//            BLUE_FULL));
 //    objects.push_back(new Figure("resources/cube.obj",
 //            Vec3f(PICTURE_WIDTH / 2. + 200, PICTURE_HEIGHT - 750., PICTURE_WIDTH),
 //            100,
@@ -187,7 +198,7 @@ void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
 //            -100,
 //            YELLOW_FULL));
 
-    objects.push_back(new Surface(
+    /*objects.push_back(new Surface(
             Vec3f(1, 0, 0), Vec3f(3, 0, 0),
             Vec3f(2, 0, 1), WhITE_FULL
             ));objects.push_back(new Surface(
@@ -209,18 +220,21 @@ void add_objects(std::vector<Object*> &objects, std::vector<Light*> &lights) {
     objects.push_back(new Surface(
             Vec3f(0, 0, -1), Vec3f(0, 1, -1),
             Vec3f(1, 0, -1), YELLOW_FULL
-    ));
+    ));*/
 
     lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., PICTURE_WIDTH - 1000),1.6));
     lights.push_back(new Light(Vec3f(PICTURE_WIDTH/ 2., 0, PICTURE_WIDTH + 4000), 1));
     lights.push_back(new Light(Vec3f(PICTURE_WIDTH/ 2., 0, PICTURE_WIDTH), 1));
+
+    backgroundImage = Picture("resources/background.jpg");
 }
 
 int main(int argc, char** argv) {
     std::vector <Object*> objects;
     std::vector <Light*> lights;
 
-    add_objects(objects, lights);
+    Picture backgroundImage{};
+    add_objects(objects, lights, backgroundImage);
 
     int threads = THREADS_DEFAULT;
     int antialiasing = ANTIALIASING_DEFAULT;
@@ -237,7 +251,7 @@ int main(int argc, char** argv) {
             }
         }
     }
-    auto pic = generate_picture(objects, lights, threads, antialiasing);
+    auto pic = generate_picture(objects, lights, backgroundImage, threads, antialiasing);
     std::vector<Color> newPicture;
     merge_picture(pic, newPicture);
     save_picture(newPicture);
