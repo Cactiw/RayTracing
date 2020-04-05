@@ -31,7 +31,7 @@ Color get_background_color(const Ray &ray, Picture &backgroundImage) {
     }
     unsigned int pos = backgroundImage.getWidth() * (int)ray.getTargetPoint().y + ray.getTargetPoint().x;
     if (pos >= backgroundImage.getColors().size()) {
-        std::cerr << "Warning, returning background" << std::endl;
+//        std::cerr << "Warning, returning background" << std::endl;
         return BACKGROUND_COLOR;
     }
     return backgroundImage.getColors().at(pos);
@@ -131,7 +131,7 @@ std::vector<std::vector<Color>> generate_picture(std::vector<Object*> &objects, 
     float offset = count_antialiasing_coefficient(antialiasing);
     auto beginPoint = Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., 0);
     for (size_t i = 0; i < PICTURE_HEIGHT; ++i) {
-//        std::cout << "Generating " << i << " row (of " << PICTURE_HEIGHT << ")..." << std::endl;
+        std::cout << "Generating " << i << " row (of " << PICTURE_HEIGHT << ")..." << std::endl;
         std::vector<Color> row(PICTURE_WIDTH, UNIT_COLOR);
         #pragma omp parallel for default(none) shared(row, beginPoint, i, antialiasing, offset, objects, lights, backgroundImage)
         for (size_t j = 0; j < PICTURE_WIDTH; ++j) {
@@ -191,7 +191,7 @@ int main(int argc, char** argv) {
                 if (i + 1 < argc) {
                     scene = int(strtol(argv[i + 1], nullptr, 10));
                     if (scene == 2) {
-                        antialiasing = 4;
+                        antialiasing = 2;
                     }
                 }
             }

@@ -93,6 +93,46 @@ void create_scene(std::vector<Object*> &objects, std::vector<Light*> &lights, Pi
             ));
 
             lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., 100, PICTURE_WIDTH + 3000),1.6));
+            break;
+        case 3:
+            objects.push_back(new Sphere(
+                    Vec3f(PICTURE_WIDTH/ 2. - 700, 250, PICTURE_WIDTH + 700),
+                    MIRROR, 250));
+            objects.push_back(new Sphere(
+                    Vec3f(PICTURE_WIDTH/ 2. + 600, 250, PICTURE_WIDTH + 700),
+                    MIRROR, 250));
+            objects.push_back(new Sphere(
+                    Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., PICTURE_WIDTH - 1000),
+                    GLASS, 150));
+
+
+            objects.push_back(new Sphere(
+                    Vec3f(PICTURE_WIDTH/ 2. - 650, 500, PICTURE_WIDTH + 500),
+                    GREEN_FULL, 150));
+            objects.push_back(new Sphere(
+                    Vec3f(PICTURE_WIDTH/ 2. + 650, 500, PICTURE_WIDTH + 500),
+                    BLUE_FULL, 150));
+
+            objects.push_back(new Figure("resources/cat.obj",
+                                         Vec3f(PICTURE_WIDTH / 2. - 500, PICTURE_HEIGHT - 150., PICTURE_WIDTH),
+                                         -100,
+                                         RED_FULL));
+
+            objects.push_back(new Figure("resources/duck.obj",
+                                         Vec3f(PICTURE_WIDTH / 2. + 550, PICTURE_HEIGHT - 250., PICTURE_WIDTH - 800),
+                                         -50,
+                                         ORANGE_FULL));
+
+            objects.push_back(new Surface(
+                    Vec3f(1, PICTURE_HEIGHT, 0), Vec3f(3, PICTURE_HEIGHT, 0),
+                    Vec3f(2, PICTURE_HEIGHT, 1), YELLOW_FULL
+            ));
+
+            lights.push_back(new Light(Vec3f(PICTURE_WIDTH/ 2., 0, 0), 1));
+
+            backgroundImage = Picture("resources/background.jpg");
+
+            break;
     }
     //    objects.push_back(new Sphere(
     //            Vec3f(PICTURE_WIDTH / 2. - 150, PICTURE_HEIGHT / 2. - 100, PICTURE_WIDTH - 450),
@@ -106,12 +146,8 @@ void create_scene(std::vector<Object*> &objects, std::vector<Light*> &lights, Pi
 //                Vec3f(PICTURE_WIDTH / 2. + 200, PICTURE_HEIGHT - 750., PICTURE_WIDTH),
 //                100,
 //                BLUE_FULL));
-    //    objects.push_back(new Figure("resources/cat.obj",
-    //            Vec3f(PICTURE_WIDTH / 2. - 300, PICTURE_HEIGHT - 300., PICTURE_WIDTH),
-    //            -100,
-    //            YELLOW_FULL));
+
 
 //    lights.push_back(new Light(Vec3f(PICTURE_WIDTH / 2., PICTURE_HEIGHT / 2., PICTURE_WIDTH - 1000),1.6));
 
-    backgroundImage = Picture("resources/background.jpg");
 }
