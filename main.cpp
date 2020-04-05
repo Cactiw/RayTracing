@@ -28,7 +28,8 @@ Color get_background_color(const Ray &ray, Picture &backgroundImage) {
         return BACKGROUND_COLOR;
     }
     int pos = backgroundImage.getWidth() * (int)ray.getTargetPoint().y + ray.getTargetPoint().x;
-    if (pos >= backgroundImage.getColors().size()) {
+    if (pos >= (int)backgroundImage.getColors().size()) {
+        std::cerr << "Warning, returning background" << std::endl;
         return BACKGROUND_COLOR;
     }
     return backgroundImage.getColors().at(pos);
