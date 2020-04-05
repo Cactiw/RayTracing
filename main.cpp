@@ -225,6 +225,7 @@ int main(int argc, char** argv) {
 
     int threads = THREADS_DEFAULT;
     int antialiasing = ANTIALIASING_DEFAULT;
+    std::string path = "./out.jpg";
     if (argc > 1) {
         for (int i = 1; i < argc; ++i) {
             if (strcmp(argv[i], "-threads") == 0) {
@@ -235,13 +236,17 @@ int main(int argc, char** argv) {
                 if (i + 1 < argc) {
                     antialiasing = int(strtol(argv[i + 1], nullptr, 10));
                 }
+            } else if (strcmp(argv[i], "-out") == 0) {
+                if (i + 1 < argc) {
+                    path = argv[i + 1];
+                }
             }
         }
     }
     auto pic = generate_picture(objects, lights, backgroundImage, threads, antialiasing);
     std::vector<Color> newPicture;
     merge_picture(pic, newPicture);
-    save_picture(newPicture);
+    save_picture(newPicture, path);
     free_resources(objects);
     free_resources(lights);
     return 0;

@@ -7,9 +7,11 @@
 #ifndef RT_FILES_H
 #define RT_FILES_H
 
+#include <string>
+
 #include "../classes/Color.h"
 
-void save_picture(std::vector<Color> & picture);
+void save_picture(std::vector<Color> & picture, const std::string &path);
 unsigned char * load_picture(const char * &path, int * width, int * height, int * channels);
 void close_picture(unsigned char * picture);
 

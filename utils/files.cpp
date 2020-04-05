@@ -16,8 +16,8 @@
 #include "../libs/stb/stb_image_write.h"
 
 
-void save_picture(std::vector<Color> & picture) {
-    stbi_write_jpg("./out.jpg", PICTURE_WIDTH, PICTURE_HEIGHT, CHANNELS_NUM,
+void save_picture(std::vector<Color> & picture, const std::string &path) {
+    stbi_write_jpg(path.data(), PICTURE_WIDTH, PICTURE_HEIGHT, CHANNELS_NUM,
                    static_cast<void*>(picture.data()), PICTURE_WIDTH * CHANNELS_NUM);
 }
 
