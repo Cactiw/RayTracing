@@ -58,6 +58,7 @@ add_custom_target(omp
         objects/Light.cpp objects/Light.h classes/Material.cpp classes/Material.h -o rt -O3 -std=c++17 -Wall
 )
 
+file(COPY resources DESTINATION .)
 
 target_link_libraries(rt ${ALL_LIBS} )
 
