@@ -156,13 +156,8 @@ void merge_picture(const std::vector<std::vector<Color>> &picture, std::vector<C
     }
 }
 
-
-void save_picture(std::vector<Color> & picture) {
-    stbi_write_jpg("./out.jpg", PICTURE_WIDTH, PICTURE_HEIGHT, CHANNELS_NUM,
-            static_cast<void*>(picture.data()), PICTURE_WIDTH * CHANNELS_NUM);
-}
-
-void free_resources(std::vector<Object*> &objects) {
+template <typename T>
+void free_resources(std::vector<T*> &objects) {
     for (auto object: objects) {
         delete object;
     }
@@ -247,5 +242,6 @@ int main(int argc, char** argv) {
     merge_picture(pic, newPicture);
     save_picture(newPicture);
     free_resources(objects);
+    free_resources(lights);
     return 0;
 }
