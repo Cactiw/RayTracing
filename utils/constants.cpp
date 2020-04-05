@@ -1,0 +1,21 @@
+//
+// Created by cactiw on 05.04.2020.
+//
+
+#ifndef RAY_TRACING_CONSTANTS
+#define RAY_TRACING_CONSTANTS
+
+
+enum {
+    PICTURE_WIDTH = 1920,
+    PICTURE_HEIGHT = 1080,
+    CHANNELS_NUM = 3,
+    BACKGROUND_COLOR_1 = 70,
+    BACKGROUND_COLOR_2 = 70,
+    BACKGROUND_COLOR_3 = 100,
+    DEPTH_LIMIT = 5,
+    THREADS_DEFAULT = 4,
+    ANTIALIASING_DEFAULT = 1,
+};
+
+#endif
