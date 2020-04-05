@@ -27,21 +27,10 @@ Color get_background_color(const Ray &ray, Picture &backgroundImage) {
     if (!backgroundImage.isOpen()) {
         return BACKGROUND_COLOR;
     }
-//    std::cout << (ray.getDirection().y * (ray.getDirection().x + 1) * backgroundImage.getHalfPixels() +
-//        ray.getDirection().z < 0 ? backgroundImage.getHalfPixels() : 0) << std::endl;
-
-//    int pos = int(ray.getTargetPoint().y * (ray.getTargetPoint().x + 1) * backgroundImage.getHalfPixels());
-//    return backgroundImage.getColors().at(
-//            std::abs(pos) + pos > 0 ? backgroundImage.getHalfPixels() : 0);
-////            ray.getDirection().z < 0 ? backgroundImage.getHalfPixels() : 0);
-//    Vec3f direction = ray.getDirection().normalize();
-//    int x = (1.0 + direction.x) * backgroundImage.getWidth() / 2.0;
-//    int y = (1.0 + direction.y) * backgroundImage.getHeight() / 2.;
-    int x = ray.getTargetPoint().x;
-    int y = ray.getTargetPoint().y;
-//    std::cout << x << " " << y << " " << x + y << std::endl;
-    int pos = backgroundImage.getWidth() * y + x;
-//    std::cout << x << " " << y << " " << pos << std::endl;
+    int pos = backgroundImage.getWidth() * (int)ray.getTargetPoint().y + ray.getTargetPoint().x;
+    if (pos >= backgroundImage.getColors().size()) {
+        return BACKGROUND_COLOR;
+    }
     return backgroundImage.getColors().at(pos);
 }
 
@@ -57,7 +46,6 @@ float find_first_intersect(const Ray &ray, const std::vector<Object*> &objects, 
             normal = tempNormal;
             trueNormal = tempTrueNormal;
             hitObject = object;
-//            std::cout << "Intersect " << ray.getTargetPoint().x << " " << ray.getTargetPoint().y << std::endl;
             min_dist = dist;
             color = object->getColor(hitPoint);
         }
@@ -99,12 +87,10 @@ Color cast_ray(Ray &ray, std::vector<Object*> &objects, std::vector<Light*> &lig
         Object* skipObject = nullptr;
         Vec3f skip1, skip2, skip3;
         Color skipColor = get_background_color(ray, backgroundImage);
-//        Vec3f toViewer = hitPoint - ray.getBeginPoint();
         for (auto light: lights) {
             Vec3f toLight = light->getCenter() - hitPoint;
             float lightDistance = toLight.norm();
             toLight = toLight.normalize();
-//            Vec3f originPoint = toLight.dotProduct(normal) > 0 ? hitPoint + normal * 1e-1 : hitPoint - normal * 1e-1;
             Vec3f lightPoint = light->getCenter();
             Ray toLightRay(originPoint, lightPoint);
             float intersectDistance = find_first_intersect(toLightRay, objects, skipObject, skip1, skip2,

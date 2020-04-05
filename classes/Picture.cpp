@@ -25,12 +25,7 @@ Picture::Picture(const char * path) {
             colors.emplace_back(picture[pos], picture[pos + 1], picture[pos + 2]);
         }
     }
-//    for (int j = height-1; j >= 0 ; j--) {
-//        for (int i = 0; i < width; i++) {
-//            colors[j * (i + 1)] = Color(picture[j * (i + 1) * 3 + 0],
-//                    picture[j * (i + 1) * 3 + 1], picture[j * (i + 1) * 3 + 2]);
-//        }
-//    }
+    colors.push_back(UNIT_COLOR);
     this->containsPicture = true;
     close_picture(picture);
 }
