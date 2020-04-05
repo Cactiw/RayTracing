@@ -27,8 +27,8 @@ float Sphere::check_intersect(const Ray &ray, Vec3f &hitPoint, Vec3f &normal, Ve
     if (t0 > t1) std::swap(t0, t1);
 
     if (t0 < 0) {
-        t0 = t1; // if t0 is negative, let's use t1 instead
-        if (t0 < 0) return -1; // both t0 and t1 are negative
+        t0 = t1; // Если t0 отрицательный, то берём t1
+        if (t0 < 0) return -1; // Оба касания позади
     }
 
     float t = t0;
